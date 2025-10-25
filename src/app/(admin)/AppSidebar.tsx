@@ -54,7 +54,7 @@ const navItems: NavItem[] = [
 
 export async function AppSidebar() {
     const session = await getServerSession(authOptions);
-console.log('Session in AppSidebar:', session);
+
     return (
         <Sidebar>
             <SidebarHeader>
