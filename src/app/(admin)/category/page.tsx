@@ -14,8 +14,6 @@ import { Button } from "@/components/ui/button";
 
 
 export default async function Page() {
-    console.log('prisma:', prisma);
-    console.log('prisma.category:', prisma?.category);
     const categories = await prisma.category.findMany({ orderBy: { name: 'asc' } });
 
     return (

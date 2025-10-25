@@ -13,12 +13,14 @@ import { ignoreEnterKey } from "@/lib/noenter";
 
 export default function NewLocationForm({
     allLocations,
+    id
 }: {
     allLocations: StorageLocation[];
+    id?: string;
 }) {
     const [isGeneratingId, setIsGeneratingId] = useState(false);
-    const [state, action, isPending] = useActionState(newLocationAction, {});
-    const [generatedId, setGeneratedId] = useState("");
+    const [state, action, isPending] = useActionState(newLocationAction, {}, NewLocationFormSchema);
+    const [generatedId, setGeneratedId] = useState(id || "" );
 
     const generateNewId = () => {
         setIsGeneratingId(true);

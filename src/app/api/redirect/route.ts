@@ -11,7 +11,6 @@ export async function POST(request: Request) {
     });
 
     if (storageLocation) {
-        console.log("Found location for barcode:", barcode);
         return new Response(JSON.stringify({ url: `/location/${barcode}` }));
     }
 
@@ -20,10 +19,12 @@ export async function POST(request: Request) {
     });
 
     if (item) {
-        console.log("Found item for barcode:", barcode);
         return new Response(JSON.stringify({ url: `/item/${item.id}` }));
     }
     
-    console.log("Received barcode:", barcode);
+    if (barcode.startsWith(process.env.LOCATION_ID_PREFIX || "STO-")) {
+        return new Response(JSON.stringify({ url: `/location/new?prefill=${barcode}` }));
+    }
+
     return new Response(JSON.stringify({ }));
 }
