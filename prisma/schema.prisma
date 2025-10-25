@@ -24,3 +24,53 @@ model AllowlistedEmail {
   email  String @unique
   role   Role   @default(USER)
 }
+
+
+model Category {
+  id          Int           @id @default(autoincrement())
+  name        String        @unique
+  description String?
+  keys        CategoryKey[]
+  items       Item[]
+}
+
+model CategoryKey {
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int
+  key        String
+  name       String?
+
+  @@id([categoryId, key])
+}
+
+model StorageLocation {
+  id          String  @id
+  name        String
+  description String? @db.Text
+
+  parent   StorageLocation?  @relation("StorageLocationToSelf", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  parentId String?
+  children StorageLocation[] @relation("StorageLocationToSelf")
+  items    Item[]
+}
+
+model Item {
+  id          String    @id
+  name        String
+  description String?   @db.Text
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  categoryId  Int?
+
+  attributes  ItemAttribute[]
+  location    StorageLocation? @relation(fields: [locationId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  locationId  String?
+}
+
+model ItemAttribute {
+  item      Item   @relation(fields: [itemId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  itemId    String
+  key       String
+  value     String
+
+  @@id([itemId, key])
+}
