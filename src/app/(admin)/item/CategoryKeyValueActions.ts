@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { CategoryKeyValue } from "./CategoryKeyValueInput";
 
 function filterUsedValues(ckv: CategoryKeyValue): boolean {
-    return (ckv.value && ckv.value.trim() !== "");
+    return typeof ckv.value === "string" && ckv.value.trim() !== "";
 }
 
 export async function determineKeyValuePairsForCategory(
