@@ -11,7 +11,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { StorageLocation } from "@/generated/prisma";
+import { getAllParents } from "../util";
 
 export default async function LocationPage({
     params,
@@ -23,29 +23,6 @@ export default async function LocationPage({
         where: { id },
         include: { children: true, parent: true },
     });
-
-    type StorageLocationWithRelations = StorageLocation & {
-        parent?: StorageLocationWithRelations | null;
-        children?: StorageLocationWithRelations[];
-    };
-
-    async function getAllParents(
-        location?: StorageLocationWithRelations | null
-    ): Promise<StorageLocationWithRelations[]> {
-        if (!location) return [];
-
-        const parents: StorageLocationWithRelations[] = [];
-        for (let current = location.parent; current; current = current.parent) {
-            parents.push(current);
-            if (current.parentId && !current.parent) {
-                current.parent = await prisma.storageLocation.findUnique({
-                    where: { id: current.parentId },
-                    include: { parent: true },
-                });
-            }
-        }
-        return parents;
-    }
 
     const allParents = await getAllParents(locationDetails);
     const breadcrumbs = allParents

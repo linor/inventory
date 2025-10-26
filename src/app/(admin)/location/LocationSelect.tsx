@@ -3,46 +3,13 @@
 import { StorageLocation } from "@/generated/prisma";
 import { Autocomplete, AutocompleteItem, MenuTriggerAction } from "@heroui/react";
 import React, { Key } from "react";
-
-type LocationOption = StorageLocation & {
-    label: string;
-};
-
+import { groupLocations, LocationOption } from "./util";
 
 type FieldData = {
     selectedKey: Key | null;
     inputValue: string;
     items: Array<LocationOption>;
 };
-
-function groupLocations(
-    locations: StorageLocation[],
-    excludeIds: string[] = [],
-    parentId: string | null = null,
-    prefix: string = ""
-): LocationOption[] {
-    let grouped: LocationOption[] = [];
-    const filteredLocations = locations.filter(
-        (loc) => loc.parentId === parentId
-    );
-
-    for (const loc of filteredLocations) {
-        if (excludeIds.includes(loc.id)) {
-            continue;
-        }
-        
-        const label = prefix ? `${prefix} > ${loc.name}` : loc.name;
-
-        grouped.push({
-            ...loc,
-            label,
-        });
-
-        grouped = grouped.concat(groupLocations(locations, excludeIds, loc.id, label));
-    }
-
-    return grouped;
-}
 
 export default function LocationSelectInput({
     locations,
