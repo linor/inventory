@@ -48,10 +48,14 @@ export default function LocationSelectInput({
     locations,
     parentId,
     excludeIds = [],
+    keyName = "parentId",
+    label = "Parent Location"
 }: {
     locations?: StorageLocation[];
     parentId?: string | null;
     excludeIds?: string[];
+    keyName?: string;
+    label?: string;
 }) {
     const groupedLocations = groupLocations(locations || [], excludeIds);
     const startValue: FieldData = {
@@ -114,11 +118,11 @@ export default function LocationSelectInput({
 
     return (
         <>
-            <input type="hidden" name="parentId" value={locationId ? locationId.toString() : ""} />
+            <input type="hidden" name={keyName} value={locationId ? locationId.toString() : ""} />
             <Autocomplete
                 inputValue={fieldState.inputValue}
                 items={fieldState.items}
-                label="Parent Location"
+                label={label}
                 placeholder="Search a location"
                 selectedKey={fieldState.selectedKey == null ? undefined : String(fieldState.selectedKey)}
                 variant="bordered"

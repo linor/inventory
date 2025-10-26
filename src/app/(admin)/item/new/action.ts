@@ -1,17 +1,50 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
-import { NewItemActionState } from "./schema";
+import { NewItemActionState, NewItemFormSchema } from "./schema";
 
 export async function newItemAction(
   _prev: NewItemActionState | undefined,
   formData: FormData,
 ): Promise<NewItemActionState | undefined> {
-  return;
-}
+    const form = Object.fromEntries(formData);
+    
+    const validationResult = NewItemFormSchema.safeParse(form);
+    if (!validationResult.success) {
+        console.log("Validation errors:", validationResult.error.flatten().fieldErrors);
+        return {
+            form,
+            errors: validationResult.error.flatten().fieldErrors,
+        };
+    }
 
-export async function determineCategoryKeys() {
-  return "some response";
+    let customKeys = [];
+    for (const entry of formData.entries()) {
+        const [key, value] = entry;
+        if (key.startsWith("param_")) {
+            const index = key.split("_")[1];
+            const customValue = formData.get(`param_${index}`);
+            if (value && customValue && typeof value === "string" && typeof customValue === "string") {
+                customKeys.push({ key: index, value: customValue });
+            }
+        }
+    }
+
+    const result = await prisma.item.create({
+        data: {
+            id: validationResult.data.id,
+            name: validationResult.data.name,
+            description: validationResult.data.description || null,
+            categoryId: validationResult.data.categoryId || null,
+            locationId: validationResult.data.locationId || null,
+            attributes: {
+                create: customKeys,
+            },
+        },
+    });
+
+    redirect("/item/" + result.id);
 }
 
 export async function generatedNewItemId() {

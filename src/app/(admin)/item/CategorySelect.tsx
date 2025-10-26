@@ -1,20 +1,26 @@
 "use client";
 
 import { Category } from "@/generated/prisma";
-import { Autocomplete, AutocompleteItem, MenuTriggerAction } from "@heroui/react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  MenuTriggerAction,
+} from "@heroui/react";
 import React, { Key } from "react";
-import { determineCategoryKeys  } from "./new/action";
+import { set } from "zod";
 
 type FieldData = {
-    selectedKey: string | null;
-    inputValue: string;
-    items: Array<Category>;
+  selectedKey: string | null;
+  inputValue: string;
+  items: Array<Category>;
 };
 
 export default function CategorySelect({
   categories,
+  onChange,
 }: {
   categories: Array<Category>;
+  onChange?: (categoryId: number | null) => void;
 }) {
   const startValue: FieldData = {
     selectedKey: null,
@@ -28,19 +34,22 @@ export default function CategorySelect({
   const onSelectionChange = (key: Key | null) => {
     setCategoryId(key === null ? null : String(key));
     setFieldState((prevState) => {
-      let selectedItem = categories.find((option) => option.id.toString() === String(key));
+      let selectedItem = categories.find(
+        (option) => option.id.toString() === String(key),
+      );
 
+      if (onChange) {
+        onChange(selectedItem ? selectedItem.id : null);
+      }
+
+      setCategoryId(key === null ? null : String(key));
       return {
         inputValue: selectedItem?.name || "",
-        selectedKey: selectedItem?.id.toString() || (key !== null ? String(key) : null),
+        selectedKey:
+          selectedItem?.id.toString() || (key !== null ? String(key) : null),
         items: categories || [],
       };
     });
-
-    determineCategoryKeys()
-        .then((categoryKeys) => {
-            console.log("Determined category keys:", categoryKeys);
-        });
   };
 
   const onInputChange = (value: string) => {
@@ -53,7 +62,10 @@ export default function CategorySelect({
     }));
   };
 
-  const onOpenChange = (isOpen: boolean, menuTrigger: MenuTriggerAction | undefined) => {
+  const onOpenChange = (
+    isOpen: boolean,
+    menuTrigger: MenuTriggerAction | undefined,
+  ) => {
     if (menuTrigger === "manual" && isOpen) {
       setFieldState((prevState) => ({
         inputValue: prevState.inputValue,
@@ -65,6 +77,7 @@ export default function CategorySelect({
 
   return (
     <>
+        <input type="hidden" name="categoryId" value={categoryId ? categoryId.toString() : ""} />
       <Autocomplete
         inputValue={fieldState.inputValue}
         items={fieldState.items}
@@ -77,7 +90,10 @@ export default function CategorySelect({
         onSelectionChange={onSelectionChange}
       >
         {(item) => (
-          <AutocompleteItem key={item.id.toString()} endContent={item.id.toString()}>
+          <AutocompleteItem
+            key={item.id.toString()}
+            endContent={item.id.toString()}
+          >
             {item.name}
           </AutocompleteItem>
         )}

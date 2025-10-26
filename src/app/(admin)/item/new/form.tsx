@@ -12,6 +12,7 @@ import { faRotate } from "@fortawesome/free-solid-svg-icons";
 import CategorySelect from "../CategorySelect";
 import LocationSelectInput from "../../location/LocationSelect";
 import { generatedNewItemId } from "./action";
+import CategoryKeyValueInput, { CategoryKeyValueInputState } from "../CategoryKeyValueInput";
 
 interface NewItemFormProps {
   categories: Category[];
@@ -25,6 +26,7 @@ export default function NewItemForm({ categories, locations }: NewItemFormProps)
     {}
   );
   const [generatedId, setGeneratedId] = useState("");
+  const [categoryKeyValues, setCategoryKeyValues, updateCategoryKeyValue] = CategoryKeyValueInputState();
 
   if (!categories) {
     categories = [];
@@ -39,6 +41,10 @@ export default function NewItemForm({ categories, locations }: NewItemFormProps)
       })
       .finally(() => setIsGeneratingId(false));
   };
+
+  function categoryChange(categoryId: number | null) {
+    console.log("Selected category ID:", categoryId);
+  }
 
   return (
     <Form action={action}>
@@ -84,11 +90,14 @@ export default function NewItemForm({ categories, locations }: NewItemFormProps)
         name="description"
         defaultValue={state?.form?.description}
       />
-      <CategorySelect categories={categories} />
+      <CategorySelect categories={categories} onChange={(i) => updateCategoryKeyValue(i)}/>
       <LocationSelectInput
         locations={locations || []}
+        keyName="locationId"
+        label="Storage Location"
       />
 
+      <CategoryKeyValueInput keyvalues={categoryKeyValues} updateValues={setCategoryKeyValues}/>
       <Button
         color="primary"
         type="submit"
