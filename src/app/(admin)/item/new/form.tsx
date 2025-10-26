@@ -17,15 +17,16 @@ import CategoryKeyValueInput, { CategoryKeyValueInputState } from "../CategoryKe
 interface NewItemFormProps {
   categories: Category[];
   locations?: StorageLocation[];
+  id?: string;
 }
 
-export default function NewItemForm({ categories, locations }: NewItemFormProps) {
+export default function NewItemForm({ categories, locations, id }: NewItemFormProps) {
   const [isGeneratingId, setIsGeneratingId] = useState(false);
   const [state, action, isPending] = useActionState(
     newItemAction,
     {}
   );
-  const [generatedId, setGeneratedId] = useState("");
+  const [generatedId, setGeneratedId] = useState(id || "");
   const [categoryKeyValues, setCategoryKeyValues, updateCategoryKeyValue] = CategoryKeyValueInputState();
 
   if (!categories) {

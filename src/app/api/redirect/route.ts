@@ -26,5 +26,9 @@ export async function POST(request: Request) {
         return new Response(JSON.stringify({ url: `/location/new?prefill=${barcode}` }));
     }
 
+    if (barcode.startsWith(process.env.ITEM_ID_PREFIX || "INV")) {
+        return new Response(JSON.stringify({ url: `/item/new?prefill=${barcode}` }));
+    }
+
     return new Response(JSON.stringify({ }));
 }
