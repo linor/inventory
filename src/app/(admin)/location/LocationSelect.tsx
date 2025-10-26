@@ -1,12 +1,18 @@
 "use client";
 
 import { StorageLocation } from "@/generated/prisma";
-import { Autocomplete, AutocompleteItem } from "@heroui/react";
-import React from "react";
-import { start } from "repl";
+import { Autocomplete, AutocompleteItem, MenuTriggerAction } from "@heroui/react";
+import React, { Key } from "react";
 
 type LocationOption = StorageLocation & {
     label: string;
+};
+
+
+type FieldData = {
+    selectedKey: Key | null;
+    inputValue: string;
+    items: Array<LocationOption>;
 };
 
 function groupLocations(
@@ -48,7 +54,7 @@ export default function LocationSelectInput({
     excludeIds?: string[];
 }) {
     const groupedLocations = groupLocations(locations || [], excludeIds);
-    const startValue = {
+    const startValue: FieldData = {
         selectedKey: "",
         inputValue: "",
         items: groupedLocations || [],
@@ -64,12 +70,12 @@ export default function LocationSelectInput({
         }
     }
 
-    const [locationId, setLocationId] = React.useState<string | null>(
+    const [locationId, setLocationId] = React.useState<Key | null>(
         parentId || null
     );
-    const [fieldState, setFieldState] = React.useState(startValue);
+    const [fieldState, setFieldState] = React.useState<FieldData>(startValue);
 
-    const onSelectionChange = (key) => {
+    const onSelectionChange = (key: Key | null) => {
         setLocationId(key);
         setFieldState((prevState) => {
             let selectedItem = prevState.items.find(
@@ -84,9 +90,7 @@ export default function LocationSelectInput({
         });
     };
 
-    // Specify how each of the Autocomplete values should change when the input
-    // field is altered by the user
-    const onInputChange = (value) => {
+    const onInputChange = (value: string) => {
         setFieldState((prevState) => ({
             inputValue: value,
             selectedKey: value === "" ? null : prevState.selectedKey,
@@ -98,8 +102,7 @@ export default function LocationSelectInput({
         }));
     };
 
-    // Show entire list if user opens the menu manually
-    const onOpenChange = (isOpen, menuTrigger) => {
+    const onOpenChange = (isOpen: boolean, menuTrigger: MenuTriggerAction | undefined) => {
         if (menuTrigger === "manual" && isOpen) {
             setFieldState((prevState) => ({
                 inputValue: prevState.inputValue,
@@ -111,20 +114,20 @@ export default function LocationSelectInput({
 
     return (
         <>
-            <input type="hidden" name="parentId" value={locationId || ""} />
+            <input type="hidden" name="parentId" value={locationId ? locationId.toString() : ""} />
             <Autocomplete
                 inputValue={fieldState.inputValue}
                 items={fieldState.items}
                 label="Parent Location"
                 placeholder="Search a location"
-                selectedKey={fieldState.selectedKey}
+                selectedKey={fieldState.selectedKey == null ? undefined : String(fieldState.selectedKey)}
                 variant="bordered"
                 onInputChange={onInputChange}
                 onOpenChange={onOpenChange}
                 onSelectionChange={onSelectionChange}
             >
                 {(item) => (
-                    <AutocompleteItem key={item.id} endContent={item.id}>
+                    <AutocompleteItem key={item.id.toString()} endContent={item.id.toString()}>
                         {item.label}
                     </AutocompleteItem>
                 )}

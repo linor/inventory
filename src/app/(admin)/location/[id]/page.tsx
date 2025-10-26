@@ -30,8 +30,10 @@ export default async function LocationPage({
     };
 
     async function getAllParents(
-        location: StorageLocationWithRelations
+        location?: StorageLocationWithRelations | null
     ): Promise<StorageLocationWithRelations[]> {
+        if (!location) return [];
+
         const parents: StorageLocationWithRelations[] = [];
         for (let current = location.parent; current; current = current.parent) {
             parents.push(current);

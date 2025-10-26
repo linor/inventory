@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { determineKeyPairs } from "../utils";
 
 export async function newCategoryAction(
-    _prev: NewCategoryActionState,
+    _prev: NewCategoryActionState | undefined,
     formData: FormData
 ): Promise<NewCategoryActionState | undefined> {
     const form = Object.fromEntries(formData);

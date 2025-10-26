@@ -1,39 +1,102 @@
 "use client";
 
-import Input from "@/components/input/InputField";
-import { Category } from "@/generated/prisma";
+import { Category, StorageLocation } from "@/generated/prisma";
+import { ignoreEnterKey } from "@/lib/noenter";
+import { Button, Form, Input, Textarea } from "@heroui/react";
+import { useState, useActionState } from "react";
+import { id } from "zod/v4/locales";
+import { NewItemFormSchema } from "./schema";
+import { newItemAction } from "./action";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRotate } from "@fortawesome/free-solid-svg-icons";
+import CategorySelect from "../CategorySelect";
+import LocationSelectInput from "../../location/LocationSelect";
+import { generatedNewItemId } from "./action";
 
 interface NewItemFormProps {
-    categories: Category[];
+  categories: Category[];
+  locations?: StorageLocation[];
 }
 
-export default function NewItemForm({ categories }: NewItemFormProps) {
-    if (!categories) {
-        categories = []
-    }
+export default function NewItemForm({ categories, locations }: NewItemFormProps) {
+  const [isGeneratingId, setIsGeneratingId] = useState(false);
+  const [state, action, isPending] = useActionState(
+    newItemAction,
+    {}
+  );
+  const [generatedId, setGeneratedId] = useState("");
 
-    return (
-        <form>
-            <div>
-                <label htmlFor="name">Item Name:</label>
-                <Input type="text" id="name" name="name" />
-            </div>
-            <div>
-                <label htmlFor="description">Description:</label>
-                <textarea id="description" name="description"></textarea>
-            </div>
-            <div>
-                <label htmlFor="category">Category:</label>
-                <select id="category" name="category">
-                    <option value="">Select a category</option>
-                    {categories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                            {category.name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <button type="submit">Create Item</button>
-        </form>
-    );
+  if (!categories) {
+    categories = [];
+  }
+
+  const generateNewId = () => {
+    setIsGeneratingId(true);
+
+    generatedNewItemId()
+      .then((id) => {
+        setGeneratedId(id);
+      })
+      .finally(() => setIsGeneratingId(false));
+  };
+
+  return (
+    <Form action={action}>
+      <Input
+        isRequired
+        errorMessage="Please enter a valid ID"
+        label="ID"
+        labelPlacement="inside"
+        name="id"
+        placeholder="Enter a unique ID for this location"
+        type="text"
+        defaultValue={state?.form?.id}
+        value={generatedId}
+        onKeyDown={ignoreEnterKey}
+        onValueChange={(newvalue) => {
+          setGeneratedId(newvalue);
+        }}
+        endContent={
+          <Button
+            type="button"
+            onPress={generateNewId}
+            disabled={isGeneratingId}
+            variant="flat"
+          >
+            <FontAwesomeIcon spin={isGeneratingId} icon={faRotate} />
+          </Button>
+        }
+      />
+      <Input
+        isRequired
+        errorMessage="Please enter a valid name"
+        label="Name"
+        labelPlacement="inside"
+        name="name"
+        placeholder="Enter a name for this item"
+        type="text"
+        defaultValue={state?.form?.name}
+        onKeyDown={ignoreEnterKey}
+      />
+      <Textarea
+        label="Description"
+        placeholder="Enter your description"
+        name="description"
+        defaultValue={state?.form?.description}
+      />
+      <CategorySelect categories={categories} />
+      <LocationSelectInput
+        locations={locations || []}
+      />
+
+      <Button
+        color="primary"
+        type="submit"
+        className="mt-4"
+        disabled={isPending}
+      >
+        Create item
+      </Button>
+    </Form>
+  );
 }

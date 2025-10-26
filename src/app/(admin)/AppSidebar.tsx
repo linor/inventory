@@ -33,7 +33,7 @@ const navItems: NavItem[] = [
     {
         icon: faDatabase,
         name: "Items",
-        path: '/items',
+        path: '/item',
     },
     {
         icon: faBoxArchive,

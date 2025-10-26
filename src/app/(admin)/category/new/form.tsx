@@ -19,14 +19,14 @@ export default function NewCategoryForm() {
                 name="name"
                 placeholder="Enter a name for this category"
                 type="text"
-                defaultValue={state.form?.name}
+                defaultValue={state?.form?.name}
                 onKeyDown={ignoreEnterKey}
             />
             <Textarea
                 label="Description"
                 placeholder="Enter your description"
                 name="description"
-                defaultValue={state.form?.description}
+                defaultValue={state?.form?.description}
             />
 
             <CustomKeys initialValue={[]} />

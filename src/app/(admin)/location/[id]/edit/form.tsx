@@ -18,8 +18,8 @@ type LocationFormProps = {
 
 export default function LocationEditForm({ original, allLocations }: LocationFormProps) {
     const [state, action, isPending] = useActionState(updateLocationAction, { form: {
-        name: original.name,
-        description: original.description
+        name: original.name || "",
+        description: original.description || ""
     } });
 
     return (

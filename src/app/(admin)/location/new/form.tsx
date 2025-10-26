@@ -3,7 +3,6 @@
 import { useActionState, useCallback, useState } from "react";
 import { newLocationAction } from "./action";
 import { NewLocationFormSchema } from "./schema";
-import { ValidatedInput } from "@/components/ui/validated-input";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotate } from "@fortawesome/free-solid-svg-icons";
 import { Button, Form, Input, Textarea } from "@heroui/react";
@@ -19,7 +18,7 @@ export default function NewLocationForm({
     id?: string;
 }) {
     const [isGeneratingId, setIsGeneratingId] = useState(false);
-    const [state, action, isPending] = useActionState(newLocationAction, {}, NewLocationFormSchema);
+    const [state, action, isPending] = useActionState(newLocationAction, {});
     const [generatedId, setGeneratedId] = useState(id || "" );
 
     const generateNewId = () => {
@@ -43,7 +42,7 @@ export default function NewLocationForm({
                 name="id"
                 placeholder="Enter a unique ID for this location"
                 type="text"
-                defaultValue={state.form?.id}
+                defaultValue={state?.form?.id}
                 value={generatedId}
                 onKeyDown={ignoreEnterKey}
                 onValueChange={(newvalue) => {
@@ -71,18 +70,18 @@ export default function NewLocationForm({
                 name="name"
                 placeholder="Enter a name for this location"
                 type="text"
-                defaultValue={state.form?.name}
+                defaultValue={state?.form?.name}
                 onKeyDown={ignoreEnterKey}
             />
             <Textarea
                 label="Description"
                 placeholder="Enter your description"
                 name="description"
-                defaultValue={state.form?.description}
+                defaultValue={state?.form?.description}
             />
             <LocationSelectInput
                 locations={allLocations}
-                parentId={state.form?.parentId}
+                parentId={state?.form?.parentId}
             />
             <Button color="primary" type="submit">
                 Create location

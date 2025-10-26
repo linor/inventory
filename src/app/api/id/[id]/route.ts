@@ -5,9 +5,8 @@ import { NextResponse } from "next/dist/server/web/spec-extension/response";
 export type ItemOrLocationResponse =
     | { type: 'location'; data: StorageLocation }
     | { type: 'item'; data: Item }
-    | { error: string };
 
-export async function POST(request: Request, { params }: { params: { id: string } }) {
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     
     const storageLocation = await prisma.storageLocation.findUnique({

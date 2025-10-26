@@ -5,7 +5,7 @@ import { UpdateLocationActionState, UpdateLocationFormSchema } from "./schema";
 import { redirect } from "next/navigation";
 
 export async function updateLocationAction(
-    _prev: UpdateLocationActionState,
+    _prev: UpdateLocationActionState | undefined,
     formData: FormData
 ): Promise<UpdateLocationActionState | undefined> {
     const form = Object.fromEntries(formData);

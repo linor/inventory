@@ -5,7 +5,7 @@ import { NewLocationActionState, NewLocationFormSchema } from "./schema";
 import prisma from "@/lib/prisma";
 
 export async function newLocationAction(
-    _prev: NewLocationActionState,
+    _prev: NewLocationActionState | undefined,
     formData: FormData
 ): Promise<NewLocationActionState | undefined> {
     const form = Object.fromEntries(formData);

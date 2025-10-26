@@ -6,7 +6,7 @@ import prisma from "@/lib/prisma";
 import { determineKeyPairs } from "../../utils";
 
 export default async function updateCategoryAction(
-    _prev: UpdateCategoryActionState,
+    _prev: UpdateCategoryActionState | undefined,
     formData: FormData
 ): Promise<UpdateCategoryActionState | undefined> {
     const form = Object.fromEntries(formData);
@@ -49,13 +49,13 @@ export default async function updateCategoryAction(
         (ek) => !newCategoryKeys.some((nk) => nk.key === ek.key)
     );
     const keysToUpdate = newCategoryKeys.filter((newKey) =>
-        existingKeys.some((ek) => ek.key === newKey.key && ek.name !== newKey.value)
+        existingKeys.some((ek) => ek.key === newKey.key && ek.name !== newKey.name)
     );
 
     for (const key of keysToUpdate) {
         await prisma.categoryKey.updateMany({
             where: { categoryId: existingCategory.id, key: key.key },
-            data: { name: key.value },
+            data: { name: key.name },
         });
     }
 
@@ -64,7 +64,7 @@ export default async function updateCategoryAction(
             data: keysToAdd.map((k) => ({
                 categoryId: existingCategory.id,
                 key: k.key,
-                name: k.value,
+                name: k.name,
             })),
         });
     }

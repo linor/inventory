@@ -18,8 +18,8 @@ type CategoryFormProps = {
 export default function EditCategoryForm({ original }: CategoryFormProps) {
     const [state, action, isPending] = useActionState(updateCategoryAction, {
         form: {
-            name: original.name,
-            description: original.description,
+            name: original.name ?? undefined,
+            description: original.description ?? undefined,
         },
     });
 
@@ -34,14 +34,14 @@ export default function EditCategoryForm({ original }: CategoryFormProps) {
                 name="name"
                 placeholder="Enter a name for this category"
                 type="text"
-                defaultValue={state.form?.name}
+                defaultValue={state?.form?.name}
                 onKeyDown={ignoreEnterKey}
             />
             <Textarea
                 label="Description"
                 placeholder="Enter your description"
                 name="description"
-                defaultValue={state.form?.description}
+                defaultValue={state?.form?.description}
             />
             <CustomKeys initialValue={original.keys} />
             <span className="text-sm text-gray-500 mb-4">

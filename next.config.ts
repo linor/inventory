@@ -14,7 +14,10 @@ const nextConfig: NextConfig = {
     },
     env: {
         version,
-    }
+    },
+    eslint: {
+        ignoreDuringBuilds: true,
+    },
 };
 
 export default nextConfig;

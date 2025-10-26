@@ -12,9 +12,9 @@ export default function CustomKeys({
     const initialPairs = initialValue && initialValue.length > 0 ? initialValue.map(k => ({ key: k.key, value: k.name })) : [{ key: "", value: "" }];
     const [pairs, setPairs] = useState(initialPairs);
 
-    const handleChange = (index, field, value) => {
+    const handleChange = (index: number, field: string, value: string) => {
         const updatedPairs = [...pairs];
-        updatedPairs[index][field] = value;
+        updatedPairs[index] = { ...updatedPairs[index], [field]: value };
         setPairs(updatedPairs);
     };
 
@@ -22,7 +22,7 @@ export default function CustomKeys({
         setPairs([...pairs, { key: "", value: "" }]);
     };
 
-    const removePair = (index) => {
+    const removePair = (index: number) => {
         const updatedPairs = pairs.filter((_, i) => i !== index);
         setPairs(updatedPairs);
     };
@@ -52,7 +52,7 @@ export default function CustomKeys({
                     <input
                         type="text"
                         placeholder="Name"
-                        value={pair.value}
+                        value={pair.value || ""}
                         onChange={(e) =>
                             handleChange(index, "value", e.target.value)
                         }

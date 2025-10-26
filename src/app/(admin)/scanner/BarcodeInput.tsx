@@ -55,17 +55,17 @@ export default function BarcodeInput() {
             });
     }
 
-    function handleScanForLocation(newItem: ItemOrLocationResponse): boolean {
+    function handleScanForLocation(newItem: ItemOrLocationResponse, location: StorageLocation): boolean {
         if ("type" in newItem && newItem.type === "item") {
-            moveItemToLocation(newItem.data, currentItem?.data);
+            moveItemToLocation(newItem.data, location);
             return true;
         }
         return false;
     }
 
-    function handleScanForItem(newItem: ItemOrLocationResponse): boolean {
-        if ("type" in newItem && newItem.type === "location") {
-            moveItemToLocation(currentItem?.data, newItem.data).then(() => {
+    function handleScanForItem(newItem: ItemOrLocationResponse, item: Item): boolean {
+        if ("type" in newItem && newItem.type === "location" && currentItem && "data" in currentItem) {
+            moveItemToLocation(item, newItem.data).then(() => {
                 setCurrentItem(null);
             });
             return true;
@@ -97,9 +97,9 @@ export default function BarcodeInput() {
 
                 if (currentItem && "type" in currentItem) {
                     if (currentItem.type === "location") {
-                        if (handleScanForLocation(result)) return;
+                        if (handleScanForLocation(result, currentItem.data)) return;
                     } else if (currentItem.type === "item") {
-                        if (handleScanForItem(result)) return;
+                        if (handleScanForItem(result, currentItem.data)) return;
                     }
                 }
 
