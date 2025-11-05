@@ -37,7 +37,7 @@ export default function LocationSelectInput({
         );
         if (selectedLocation) {
             startValue.selectedKey = selectedLocation.id;
-            startValue.inputValue = selectedLocation.name;
+            startValue.inputValue = selectedLocation.name || "Unnamed Location";
         }
     }
 
@@ -54,7 +54,7 @@ export default function LocationSelectInput({
             );
 
             return {
-                inputValue: selectedItem?.name || "",
+                inputValue: selectedItem?.name || "Unnamed Location",
                 selectedKey: key,
                 items: groupedLocations || [],
             };
@@ -99,7 +99,7 @@ export default function LocationSelectInput({
             >
                 {(item) => (
                     <AutocompleteItem key={item.id.toString()} endContent={item.id.toString()}>
-                        {item.label}
+                        {item.label || "Unnamed Location"}
                     </AutocompleteItem>
                 )}
             </Autocomplete>

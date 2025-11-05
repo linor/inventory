@@ -34,7 +34,7 @@ export default async function LocationPage({
         }));
     breadcrumbs.unshift({ name: "Locations", href: "/location" });
     breadcrumbs.push({
-        name: locationDetails?.name || "Unknown location",
+        name: locationDetails?.name || "Unnamed Location",
         href: "",
     });
 
@@ -44,7 +44,8 @@ export default async function LocationPage({
             <main className="shrink-0 items-center gap-2 px-4">
                 <div className="w-full rounded-xl border mb-8 mt-4 p-4 overflow-hidden">
                     <span className="text-3xl font-bold">
-                        {locationDetails?.name}
+                        {locationDetails?.name || "Unnamed Location"} {locationDetails?.contents &&
+                            `(${locationDetails.contents})`}
                         <Link href={`/location/${id}/edit`}>
                             <button className="btn btn-outline">
                                 <FontAwesomeIcon icon={faPenToSquare} />

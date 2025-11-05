@@ -21,7 +21,7 @@ export default async function EditLocationPage({
     const allLocations = await prisma.storageLocation.findMany({ orderBy: { name: 'asc' } });
     const breadcrumbs = [
         { name: "Locations", href: "/location" },
-        { name: locationDetails?.name || 'Unknown location', href: `/location/${locationDetails?.id}` },
+        { name: locationDetails?.name || 'Unnamed Location', href: `/location/${locationDetails?.id}` },
         { name: "Edit", href: "" },
     ]
 

@@ -19,7 +19,8 @@ type LocationFormProps = {
 export default function LocationEditForm({ original, allLocations }: LocationFormProps) {
     const [state, action, isPending] = useActionState(updateLocationAction, { form: {
         name: original.name || "",
-        description: original.description || ""
+        description: original.description || "",
+        contents: original.contents || "",
     } });
 
     return (
@@ -34,6 +35,14 @@ export default function LocationEditForm({ original, allLocations }: LocationFor
                 placeholder="Enter a name for this location"
                 type="text"
                 defaultValue={state?.form?.name}
+            />
+            <Input
+                label="Contents"
+                labelPlacement="inside"
+                name="contents"
+                placeholder="Enter contents summary"
+                type="text"
+                defaultValue={state?.form?.contents}
             />
             <Textarea
                 label="Description"

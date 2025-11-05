@@ -24,6 +24,7 @@ export async function newLocationAction(
             name: validationResult.data.name,
             description: validationResult.data.description || null,
             parentId: validationResult.data.parentId || null,
+            contents: validationResult.data.contents || null,
         },
     });
 

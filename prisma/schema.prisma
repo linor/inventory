@@ -47,6 +47,7 @@ model StorageLocation {
   id          String  @id
   name        String
   description String? @db.Text
+  contents    String?
 
   parent   StorageLocation?  @relation("StorageLocationToSelf", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
   parentId String?
