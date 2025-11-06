@@ -14,10 +14,6 @@ export default async function Page() {
     <>
       <PageHeader breadcrumbs={[{ name: "All Locations" }]} />
       <main className="shrink-0 items-center gap-2 px-4">
-        <Link href="/location/new" className="mt-4">
-          <Button>Add New Location</Button>
-        </Link>
-
         <LocationList location={locations}/>
       </main>
     </>

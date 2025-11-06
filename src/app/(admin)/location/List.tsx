@@ -6,6 +6,7 @@ import {
   flexRender,
   ColumnDef,
   getPaginationRowModel,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { StorageLocation } from "@/generated/prisma";
@@ -20,6 +21,8 @@ import {
 } from "@/components/ui/table";
 import Link from "next/dist/client/link";
 import TablePaging from "./Paging";
+import { Button } from "@/components/ui/button";
+import { Input } from "@heroui/react";
 
 type GroupedStorageLocation = {
   location: StorageLocation;
@@ -43,7 +46,7 @@ function groupByParent(
 }
 
 export default function LocationList({
-  location: locations,
+  location: locations
 }: {
   location: StorageLocation[];
 }) {
@@ -82,6 +85,7 @@ export default function LocationList({
     })),
   );
 
+  const [globalFilter, setGlobalFilter] = useState<any>([]);
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 10,
@@ -92,12 +96,26 @@ export default function LocationList({
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
     onPaginationChange: setPagination,
-    state: { pagination },
+    onGlobalFilterChange: setGlobalFilter,
+    state: { pagination, globalFilter },
   });
 
   return (
     <>
+      <div className="flex items-center gap-2 mb-4">
+      <Input
+        className="flex-1"
+        placeholder="Search locations..."
+        value={globalFilter}
+        onChange={(e) => setGlobalFilter(e.target.value)}
+      />
+      <Link href="/location/new" className="ml-2">
+        <Button>Add New Location</Button>
+      </Link>
+      </div>
+    
       <div className="mt-4 mb-4 w-full overflow-hidden rounded-xl border">
         <Table className="w-full">
           <TableHeader>
