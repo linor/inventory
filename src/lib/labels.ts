@@ -10,7 +10,7 @@ async function printLabel(data: any) {
         throw new Error("PRINT_QUEUE_ADDRESS is not defined in environment variables");
     }
 
-    const sock = new zmq.Push();
+    const sock = new zmq.Push({ ipv6: true, immediate: true });
     await sock.connect(printQueueAddress);
     await sock.send(JSON.stringify(data));
     await sock.close();
