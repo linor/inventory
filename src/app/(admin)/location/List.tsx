@@ -8,7 +8,7 @@ import {
   getPaginationRowModel,
   getFilteredRowModel,
 } from "@tanstack/react-table";
-import { useState } from "react";
+import { JSX, useState } from "react";
 import { StorageLocation } from "@/generated/prisma";
 import {
   Table,
@@ -27,6 +27,7 @@ import { Input } from "@heroui/react";
 type GroupedStorageLocation = {
   location: StorageLocation;
   indentation: number;
+  name?: JSX.Element;
 };
 
 function groupByParent(
@@ -60,19 +61,21 @@ export default function LocationList({
         <div
           style={{ paddingLeft: `${8 + info.row.original.indentation * 16}px` }}
         >
-          {info.getValue()}
+          {info.getValue() as React.ReactNode}
         </div>
       ),
     },
     {
       accessorKey: "id",
       header: () => <div className="w-[100px] text-right">ID</div>,
-      cell: (info) => <div className="text-right">{info.getValue()}</div>,
+      cell: (info) => <div className="text-right">{info.getValue() as React.ReactNode}</div>,
     },
   ];
 
   const [data, setData] = useState(() =>
     groupedLocations.map(({ location, indentation }) => ({
+      location,
+      indentation,
       name: (
         <Link href={`/location/${location.id}`}>
           {location.name || (
@@ -80,8 +83,6 @@ export default function LocationList({
           )}
         </Link>
       ),
-      id: location.id,
-      indentation,
     })),
   );
 
