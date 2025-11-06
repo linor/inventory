@@ -30,12 +30,14 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.22",
+    "izitoast": "^1.4.0",
     "lucide-react": "^0.545.0",
     "next": "15.5.2",
     "next-auth": "4.24.11",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "^3.3.1",
+    "zeromq": "^6.5.0",
     "zod": "^4.1.7"
   },
   "devDependencies": {

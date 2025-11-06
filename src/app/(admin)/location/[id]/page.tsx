@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faPrint } from "@fortawesome/free-solid-svg-icons";
 import PageHeader from "../../PageHeader";
 import {
     Table,
@@ -12,6 +12,8 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { getAllParents } from "../util";
+import { printLabelForLocation } from "@/lib/labels";
+import PrintButton from "./PrintButton";
 
 export default async function LocationPage({
     params,
@@ -38,6 +40,12 @@ export default async function LocationPage({
         href: "",
     });
 
+    function handlePrintLabel() {
+        "use client";
+
+        printLabelForLocation(locationDetails!);
+    }
+
     return (
         <>
             <PageHeader breadcrumbs={breadcrumbs} />
@@ -51,6 +59,7 @@ export default async function LocationPage({
                                 <FontAwesomeIcon icon={faPenToSquare} />
                             </button>
                         </Link>
+                        <PrintButton location={locationDetails!} />
                     </span>
                     <span className="text-lg text-gray-600 ml-2 float-right">
                         {locationDetails?.id}
