@@ -1,6 +1,6 @@
 "use server";
 
-import { StorageLocation } from "@/generated/prisma";
+import { Category, Item, ItemAttribute, StorageLocation } from "@/generated/prisma";
 import prisma from "./prisma";
 import zmq from "zeromq";
 
@@ -10,7 +10,7 @@ async function printLabel(data: any) {
         throw new Error("PRINT_QUEUE_ADDRESS is not defined in environment variables");
     }
 
-    const sock = new zmq.Push({ ipv6: true, immediate: true });
+    const sock = new zmq.Push({ ipv6: true, immediate: (process.env.PRINT_QUEUE_IMMEDIATE === "true") });
     await sock.connect(printQueueAddress);
     await sock.send(JSON.stringify(data));
     await sock.close();
@@ -48,3 +48,25 @@ export async function printLabelForLocation(location: StorageLocation) {
 
     return printLabel(label);
 }
+
+export type ItemWithAttributes = Item & {
+    attributes: ItemAttribute[];
+};
+
+export async function printLabelForItem(item: ItemWithAttributes, category?: Category | null, location?: StorageLocation | null) {
+    console.log("Printing label for item:", item.id);
+    const label = {
+        type: "item",
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        attributes: Object.fromEntries(item.attributes.map(attr => [attr.key, attr.value])),
+        location: location?.id,
+        ...(category && { category: { id: category.id, name: category.name } }),
+    };
+    console.log("Label data:", label);
+    return printLabel(label);
+}
+
+
+

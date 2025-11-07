@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/table";
 import { notFound } from "next/navigation";
 import { getAllParents } from "../../location/util";
+import PrintButton from "./PrintButton";
 
 export default async function ViewItemPage({
     params,
@@ -64,6 +65,7 @@ export default async function ViewItemPage({
                                 <FontAwesomeIcon icon={faPenToSquare} />
                             </button>
                         </Link>
+                        <PrintButton item={item} category={category} location={location} />
                     </span>
                     <span className="text-lg text-gray-600 ml-2 float-right">
                         {item?.id}
