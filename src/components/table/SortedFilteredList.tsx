@@ -7,6 +7,7 @@ import {
     getPaginationRowModel,
     useReactTable,
     flexRender,
+    FilterFn,
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { Input } from "@heroui/react";
@@ -27,6 +28,7 @@ type SortedFilteredListProps<E> = {
     data: E[];
     pageSize?: number;
     searchPlaceholder?: string;
+    filterFn?: FilterFn<E>;
 };
 
 export default function SortedFilteredList<E>({
@@ -35,6 +37,7 @@ export default function SortedFilteredList<E>({
     data,
     pageSize = 10,
     searchPlaceholder = "Search...",
+    filterFn,
 }: SortedFilteredListProps<E>) {
     const [contents, setContents] = useState(data);
     const [globalFilter, setGlobalFilter] = useState<any>([]);
@@ -51,6 +54,7 @@ export default function SortedFilteredList<E>({
         getFilteredRowModel: getFilteredRowModel(),
         onPaginationChange: setPagination,
         onGlobalFilterChange: setGlobalFilter,
+        globalFilterFn: filterFn,
         state: { pagination, globalFilter },
     });
 
