@@ -34,6 +34,10 @@ export default function BarcodeScannerInput({
             }
 
             if (event.key === "Enter") {
+                if (!inputBuffer || inputBuffer.length == 0) {
+                    return;
+                }
+                
                 const searchInput = inputBuffer;
                 fetch("/api/redirect", {
                     method: "POST",

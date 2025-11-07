@@ -1,12 +1,22 @@
 "use client";
 
-import { Category, Item, ItemAttribute, StorageLocation } from "@/generated/prisma";
+import {
+    Category,
+    Item,
+    ItemAttribute,
+    StorageLocation,
+} from "@/generated/prisma";
 import { ItemWithAttributes, printLabelForItem } from "@/lib/labels";
+import { ignoreEnterKey } from "@/lib/noenter";
 import { faPrint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import iziToast from "izitoast";
 
-function printLabel(item: ItemWithAttributes, location?: StorageLocation | null, category?: Category | null) {
+function printLabel(
+    item: ItemWithAttributes,
+    location?: StorageLocation | null,
+    category?: Category | null,
+) {
     return printLabelForItem(item, category, location)
         .then(() => {
             iziToast.success({
@@ -23,9 +33,22 @@ function printLabel(item: ItemWithAttributes, location?: StorageLocation | null,
         });
 }
 
-export default function PrintButton({ item, category, location }: { item: ItemWithAttributes, category?: Category | null, location?: StorageLocation | null }) {
+export default function PrintButton({
+    item,
+    category,
+    location,
+}: {
+    item: ItemWithAttributes;
+    category?: Category | null;
+    location?: StorageLocation | null;
+}) {
     return (
-        <button className="btn btn-outline" onClick={() => printLabel(item, location, category)}>
+        <button
+            className="btn btn-outline"
+            onClick={() => printLabel(item, location, category)}
+            onKeyDown={ignoreEnterKey}
+            onKeyUp={ignoreEnterKey}
+        >
             <FontAwesomeIcon icon={faPrint} />
         </button>
     );
