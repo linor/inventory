@@ -7,9 +7,15 @@ export default function CameraScanner({ onScan }: { onScan?: (data: string) => v
     const cameraDivId = `camera-scanner-div`;
 
     useEffect(() => {
+        const qrboxFunction = (viewfinderWidth: number, viewfinderHeight: number) => {
+            const minEdgeSize = Math.min(viewfinderWidth, viewfinderHeight);
+            const boxSize = Math.floor(minEdgeSize * 0.8);
+            return { width: boxSize, height: boxSize };
+        }
+
         const config = {
             fps: 10,
-            qrbox: { width: 250, height: 250 }
+            qrbox: qrboxFunction
         }
 
         const html5QrCode = new Html5Qrcode(cameraDivId);
@@ -34,15 +40,18 @@ export default function CameraScanner({ onScan }: { onScan?: (data: string) => v
         });
 
         return () => {
-            html5QrCode.stop().catch((err) => {
-                console.error("Unable to stop scanning.", err);
-            });
+            if (html5QrCode.isScanning) {
+                html5QrCode.stop().catch((err) => {
+                    console.error("Unable to stop scanning.", err);
+                });
+            }
         };
-    }, []);
+    }, [onScan]);
 
     return (
         <div
             id={cameraDivId}
+            style={{ width: '200px', margin: 'auto' }}
         >
             Camera Scanner
         </div>
