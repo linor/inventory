@@ -1,11 +1,12 @@
 "use client";
 
 import CameraScanner from "./CameraScanner";
-import { Button, Input } from "@heroui/react";
+import { Button, Input, user } from "@heroui/react";
 import { useState } from "react";
 import { ItemOrLocationResponse } from "@/app/api/id/[id]/route";
 import { set } from "zod";
 import { Item, StorageLocation } from "@/generated/prisma";
+import { useRouter } from "next/navigation";
 
 type LogEntry = {
     entry: string;
@@ -13,6 +14,7 @@ type LogEntry = {
 };
 
 export default function BarcodeInput() {
+    const router = useRouter();
     const [currentItem, setCurrentItem] =
         useState<ItemOrLocationResponse | null>(null);
     const [inputValue, setInputValue] = useState("");
@@ -88,6 +90,11 @@ export default function BarcodeInput() {
             .then((response) => response.json())
             .then((result) => {
                 if (result.error) {
+                    if (data.startsWith('INV-')) {
+                        router.push('/item/new?prefill=' + encodeURIComponent(data));
+                        return;
+                    }
+
                     addLogEntry(
                         `Could not find item/location for code: ${data}`,
                         "error"
