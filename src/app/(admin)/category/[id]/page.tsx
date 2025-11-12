@@ -12,6 +12,8 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { notFound } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 export default async function LocationPage({
     params,
@@ -40,18 +42,29 @@ export default async function LocationPage({
         <>
             <PageHeader breadcrumbs={breadcrumbs} />
             <main className="shrink-0 items-center gap-2 px-4">
-                <div className="w-full rounded-xl border mb-8 mt-4 p-4 overflow-hidden">
-                    <span className="text-3xl font-bold">
-                        {categoryDetails?.name}
-                        <Link href={`/category/${id}/edit`}>
-                            <button className="btn btn-outline">
-                                <FontAwesomeIcon icon={faPenToSquare} />
-                            </button>
-                        </Link>
-                    </span>
-                    <p className="text-gray-600">
-                        {categoryDetails?.description}
-                    </p>
+                                <div className="w-full rounded-xl border mb-8 mt-4 p-4 overflow-hidden flex items-start justify-between">
+                    <div>
+                        <span className="text-3xl font-bold">
+                            {categoryDetails?.name}
+                        </span>
+                        {categoryDetails?.description && (
+                            <p className="text-gray-600 mt-5">
+                                {categoryDetails?.description}
+                            </p>
+                        )}
+                    </div>
+                    <div className="flex gap-2">
+                        <ButtonGroup>
+                            <Button
+                                variant="outline"
+                                asChild
+                            >
+                                <Link href={`/category/${id}/edit`}>
+                                    <FontAwesomeIcon icon={faPenToSquare} /> edit
+                                </Link>
+                            </Button>
+                        </ButtonGroup>
+                    </div>
                 </div>
 
                 {categoryDetails?.keys && categoryDetails.keys.length > 0 && (
