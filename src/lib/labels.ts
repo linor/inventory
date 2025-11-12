@@ -36,7 +36,7 @@ async function determineLocationParents(location: StorageLocation): Promise<stri
     return parents;
 }
 
-export async function printLabelForLocation(location: StorageLocation) {
+export async function printLabelForLocation(location: StorageLocation, variant: string = "default") {
     const label = {
         type: "location",
         id: location.id,
@@ -44,6 +44,7 @@ export async function printLabelForLocation(location: StorageLocation) {
         contents: location.contents,
         description: location.description,
         parents: await determineLocationParents(location),
+        variant: variant,
     }
 
     return printLabel(label);
@@ -53,8 +54,7 @@ export type ItemWithAttributes = Item & {
     attributes: ItemAttribute[];
 };
 
-export async function printLabelForItem(item: ItemWithAttributes, category?: Category | null, location?: StorageLocation | null) {
-    console.log("Printing label for item:", item.id);
+export async function printLabelForItem(item: ItemWithAttributes, category?: Category | null, location?: StorageLocation | null, variant: string = "default") {
     const label = {
         type: "item",
         id: item.id,
@@ -63,8 +63,8 @@ export async function printLabelForItem(item: ItemWithAttributes, category?: Cat
         attributes: Object.fromEntries(item.attributes.map(attr => [attr.key, attr.value])),
         location: location?.id,
         ...(category && { category: { id: category.id, name: category.name } }),
+        variant: variant,
     };
-    console.log("Label data:", label);
     return printLabel(label);
 }
 

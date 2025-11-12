@@ -14,6 +14,12 @@ import {
 import { notFound } from "next/navigation";
 import { getAllParents } from "../../location/util";
 import PrintButton from "./PrintButton";
+import {
+    ButtonGroup,
+    ButtonGroupSeparator,
+    ButtonGroupText,
+} from "@/components/ui/button-group"
+import { Button } from "@/components/ui/button"
 
 export default async function ViewItemPage({
     params,
@@ -52,42 +58,58 @@ export default async function ViewItemPage({
         acc[key.key] = key.name || key.key;
         return acc;
     }, {}) || {};
-    
+
     return (
         <>
             <PageHeader breadcrumbs={breadcrumbs} />
             <main className="shrink-0 items-center gap-2 px-4">
-                <div className="w-full rounded-xl border mb-8 mt-4 p-4 overflow-hidden">
-                    <span className="text-3xl font-bold">
-                        {item?.name}
-                        <Link href={`/item/${id}/edit`}>
-                            <button className="btn btn-outline">
-                                <FontAwesomeIcon icon={faPenToSquare} />
-                            </button>
-                        </Link>
-                        <PrintButton item={item} category={category} location={location} />
-                    </span>
-                    <span className="text-lg text-gray-600 ml-2 float-right">
-                        {item?.id}
-                    </span>
-                    <p className="text-gray-600">
-                        {item?.description}
-                    </p>
+                <div className="w-full rounded-xl border mb-8 mt-4 p-4 overflow-hidden flex items-start justify-between">
+                    <div>
+                        <span className="text-3xl font-bold">
+                            {item?.name}
+                        </span>
+                        <div className="text-sm text-gray-600 mt-1">
+                            {item?.id}
+                        </div>
+                        {item?.description && (
+                            <p className="text-gray-600 mt-5">
+                                {item?.description}
+                            </p>
+                        )}
+                    </div>
+                    <div className="flex gap-2">
+                        <ButtonGroup>
+                            <Button
+                                variant="outline"
+                                asChild
+                            >
+                                <Link href={`/item/${item.id}/edit`}>
+                                    <FontAwesomeIcon icon={faPenToSquare} /> edit
+                                </Link>
+                            </Button>
+                        </ButtonGroup>
+                        <ButtonGroup>
+                            <PrintButton item={item} category={category} location={location} />
+                        </ButtonGroup>
+                    </div>
                 </div>
 
                 {location && (
                     <div className="w-full rounded-xl border mb-8 mt-4 p-4 overflow-hidden ">
-                        {locations.map((loc, index) => (
-                            <span key={loc.id} className="text-gray-400">
-                                <Link href={`/location/${loc.id}`}>
-                                    {loc.name}
-                                </Link>
-                                {index < locations.length - 1 && " / "}
-                            </span>
-                        ))}
-                        <br />
-                        <span className="text-xl font-bold">
-                            <Link href={`/location/${location.id}`}>
+                        {locations.length > 0 && (
+                            <>
+                                {locations.map((loc, index) => (
+                                    <span key={loc.id} className="text-gray-400">
+                                        <Link href={`/location/${loc.id}`}>
+                                            {loc.name || "Unnamed Location"}
+                                        </Link>
+                                        <span className="mx-1 text-gray-300">›</span>
+                                    </span>
+                                ))}
+                            </>
+                        )}
+                        <span className="text-xl">
+                            <Link href={`/location/${location.id}`} className="font-bold">
                                 {location.name}
                             </Link>
                         </span>

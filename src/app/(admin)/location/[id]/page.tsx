@@ -14,6 +14,12 @@ import {
 import { getAllParents } from "../util";
 import { printLabelForLocation } from "@/lib/labels";
 import PrintButton from "./PrintButton";
+import {
+    ButtonGroup,
+    ButtonGroupSeparator,
+    ButtonGroupText,
+} from "@/components/ui/button-group"
+import { Button } from "@/components/ui/button"
 
 export default async function LocationPage({
     params,
@@ -50,23 +56,36 @@ export default async function LocationPage({
         <>
             <PageHeader breadcrumbs={breadcrumbs} />
             <main className="shrink-0 items-center gap-2 px-4">
-                <div className="w-full rounded-xl border mb-8 mt-4 p-4 overflow-hidden">
-                    <span className="text-3xl font-bold">
-                        {locationDetails?.name || "Unnamed Location"} {locationDetails?.contents &&
+                <div className="w-full rounded-xl border mb-8 mt-4 p-4 overflow-hidden flex items-start justify-between">
+                    <div>
+                        <span className="text-3xl font-bold">
+                            {locationDetails?.name || "Unnamed Location"} {locationDetails?.contents &&
                             `(${locationDetails.contents})`}
-                        <Link href={`/location/${id}/edit`}>
-                            <button className="btn btn-outline">
-                                <FontAwesomeIcon icon={faPenToSquare} />
-                            </button>
-                        </Link>
-                        <PrintButton location={locationDetails!} />
-                    </span>
-                    <span className="text-lg text-gray-600 ml-2 float-right">
-                        {locationDetails?.id}
-                    </span>
-                    <p className="text-gray-600">
-                        {locationDetails?.description}
-                    </p>
+                        </span>
+                        <div className="text-sm text-gray-600 mt-1">
+                            {locationDetails?.id}
+                        </div>
+                        {locationDetails?.description && (
+                            <p className="text-gray-600 mt-5">
+                                {locationDetails?.description}
+                            </p>
+                        )}
+                    </div>
+                    <div className="flex gap-2">
+                        <ButtonGroup>
+                            <Button
+                                variant="outline"
+                                asChild
+                            >
+                                <Link href={`/location/${id}/edit`}>
+                                    <FontAwesomeIcon icon={faPenToSquare} /> edit
+                                </Link>
+                            </Button>
+                        </ButtonGroup>
+                        <ButtonGroup>
+                            <PrintButton location={locationDetails!} />
+                        </ButtonGroup>
+                    </div>
                 </div>
 
                 {locationDetails?.children &&
