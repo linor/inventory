@@ -44,7 +44,11 @@ export async function newItemAction(
         },
     });
 
-    redirect("/item/" + result.id);
+    if (validationResult.data.continueadding) {
+      redirect("/item/new?continueadding=true&copy=" + encodeURIComponent(result.id));
+    }
+
+    redirect("/item/" + encodeURIComponent(result.id));
 }
 
 export async function generatedNewItemId() {

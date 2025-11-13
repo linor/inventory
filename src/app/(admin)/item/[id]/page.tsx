@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare, faTrash, faCopy } from "@fortawesome/free-solid-svg-icons";
 import PageHeader from "../../PageHeader";
 import {
     Table,
@@ -20,6 +20,17 @@ import {
     ButtonGroupText,
 } from "@/components/ui/button-group"
 import { Button } from "@/components/ui/button"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+    DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu"
+import {
+    MoreHorizontalIcon,
+} from "lucide-react"
 
 export default async function ViewItemPage({
     params,
@@ -87,6 +98,29 @@ export default async function ViewItemPage({
                                     <FontAwesomeIcon icon={faPenToSquare} /> edit
                                 </Link>
                             </Button>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" size="icon">
+                                        <MoreHorizontalIcon />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-52">
+                                    <DropdownMenuGroup>
+                                        <DropdownMenuItem >
+                                            <Link href={`/item/new?copy=${encodeURIComponent(item.id)}`}>
+                                                <FontAwesomeIcon icon={faCopy} /> Duplicate item
+                                            </Link>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuGroup>
+                                        <DropdownMenuItem variant="destructive">
+                                            <FontAwesomeIcon icon={faTrash} />
+                                            Delete
+                                        </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </ButtonGroup>
                         <ButtonGroup>
                             <PrintButton item={item} category={category} location={location} />

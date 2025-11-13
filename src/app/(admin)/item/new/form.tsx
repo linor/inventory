@@ -5,29 +5,57 @@ import { ignoreEnterKey } from "@/lib/noenter";
 import { Button, Form, Input, Textarea } from "@heroui/react";
 import { useState, useActionState } from "react";
 import { id } from "zod/v4/locales";
-import { NewItemFormSchema } from "./schema";
+import { NewItemActionState, NewItemFormSchema } from "./schema";
 import { newItemAction } from "./action";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotate } from "@fortawesome/free-solid-svg-icons";
 import CategorySelect from "../CategorySelect";
 import LocationSelectInput from "../../location/LocationSelect";
 import { generatedNewItemId } from "./action";
-import CategoryKeyValueInput, { CategoryKeyValueInputState } from "../CategoryKeyValueInput";
+import CategoryKeyValueInput, { CategoryKeyValue, CategoryKeyValueInputState } from "../CategoryKeyValueInput";
+import { ItemWithAttributes } from "@/lib/labels";
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+
+export type NewItemStartValue = {
+  item: ItemWithAttributes;
+  categoryKeyValues: CategoryKeyValue[];
+};
 
 interface NewItemFormProps {
   categories: Category[];
   locations?: StorageLocation[];
   id?: string;
+  source?: NewItemStartValue | null;
+  continueadding?: boolean;
 }
 
-export default function NewItemForm({ categories, locations, id }: NewItemFormProps) {
+export default function NewItemForm({ categories, locations, id, source, continueadding }: NewItemFormProps) {
+  const initialState: NewItemActionState = {
+    form: {
+      continueadding: continueadding ? "true" : undefined,
+    },
+  };
+  const startCategoryKeyValues: CategoryKeyValue[] = [];
+
+  if (source) {
+    initialState.form = {
+      ...initialState.form,
+      id: source.item.id,
+      name: source.item.name,
+      description: source.item.description || ""
+    };
+
+    startCategoryKeyValues.push(...source.categoryKeyValues);
+  }
+
   const [isGeneratingId, setIsGeneratingId] = useState(false);
   const [state, action, isPending] = useActionState(
     newItemAction,
-    {}
+    initialState
   );
   const [generatedId, setGeneratedId] = useState(id || "");
-  const [categoryKeyValues, setCategoryKeyValues, updateCategoryKeyValue] = CategoryKeyValueInputState();
+  const [categoryKeyValues, setCategoryKeyValues, updateCategoryKeyValue] = CategoryKeyValueInputState(startCategoryKeyValues);
 
   if (!categories) {
     categories = [];
@@ -42,10 +70,6 @@ export default function NewItemForm({ categories, locations, id }: NewItemFormPr
       })
       .finally(() => setIsGeneratingId(false));
   };
-
-  function categoryChange(categoryId: number | null) {
-    console.log("Selected category ID:", categoryId);
-  }
 
   return (
     <Form action={action}>
@@ -91,22 +115,28 @@ export default function NewItemForm({ categories, locations, id }: NewItemFormPr
         name="description"
         defaultValue={state?.form?.description}
       />
-      <CategorySelect categories={categories} onChange={(i) => updateCategoryKeyValue(i)}/>
+      <CategorySelect categories={categories} onChange={(i) => updateCategoryKeyValue(i)} initialCategoryId={source?.item?.categoryId} />
       <LocationSelectInput
         locations={locations || []}
         keyName="locationId"
         label="Storage Location"
+        parentId={source?.item?.locationId}
       />
 
-      <CategoryKeyValueInput keyvalues={categoryKeyValues} updateValues={setCategoryKeyValues}/>
-      <Button
-        color="primary"
-        type="submit"
-        className="mt-4"
-        disabled={isPending}
-      >
-        Create item
-      </Button>
+      <CategoryKeyValueInput keyvalues={categoryKeyValues} updateValues={setCategoryKeyValues} />
+      <div className="flex items-center gap-4 mt-4">
+        <Button
+          color="primary"
+          type="submit"
+          disabled={isPending}
+        >
+          Create item
+        </Button>
+        <div className="flex items-center gap-1">
+          <Checkbox id="continueadding" name="continueadding" defaultChecked={state?.form?.continueadding ? true : false} />
+          <Label htmlFor="continueadding">Continue adding items</Label>
+        </div>
+      </div>
     </Form>
   );
 }

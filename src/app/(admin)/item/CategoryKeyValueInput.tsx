@@ -3,6 +3,7 @@ import { Category } from "@/generated/prisma";
 import prisma from "@/lib/prisma";
 import { determineKeyValuePairsForCategory } from "./CategoryKeyValueActions";
 import { Input } from "@heroui/react";
+import { start } from "repl";
 
 export type CategoryKeyValue = {
   key: string;
@@ -10,13 +11,13 @@ export type CategoryKeyValue = {
   value: string;
 };
 
-export function CategoryKeyValueInputState(): [
+export function CategoryKeyValueInputState(startValues: CategoryKeyValue[] | null): [
   any,
   Dispatch<SetStateAction<any>>,
   (categoryId: number | null) => Promise<void>,
 ] {
   const [keyValue, setKeyValue] = React.useState<CategoryKeyValue[] | null>(
-    null,
+    startValues || null,
   );
 
   async function updateCategoryKeyValue(categoryId: number | null) {

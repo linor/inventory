@@ -17,9 +17,11 @@ type FieldData = {
 
 export default function CategorySelect({
   categories,
+  initialCategoryId,
   onChange,
 }: {
   categories: Array<Category>;
+  initialCategoryId?: number | null;
   onChange?: (categoryId: number | null) => void;
 }) {
   const startValue: FieldData = {
@@ -28,7 +30,17 @@ export default function CategorySelect({
     items: categories || [],
   };
 
-  const [categoryId, setCategoryId] = React.useState<string | null>(null);
+  if (initialCategoryId) {
+    const initialCategory = categories.find(
+      (cat) => cat.id === initialCategoryId,
+    );
+    if (initialCategory) {
+      startValue.selectedKey = String(initialCategory.id);
+      startValue.inputValue = initialCategory.name;
+    }
+  }
+
+  const [categoryId, setCategoryId] = React.useState<string | null>(initialCategoryId ? String(initialCategoryId) : null);
   const [fieldState, setFieldState] = React.useState<FieldData>(startValue);
 
   const onSelectionChange = (key: Key | null) => {

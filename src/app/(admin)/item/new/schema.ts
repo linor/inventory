@@ -6,6 +6,7 @@ export const NewItemFormSchema = z.object({
   description: z.string().optional(),
   locationId: z.string().optional(),
   categoryId: z.coerce.number().optional(),
+  continueadding: z.string().optional(),
 });
 
 export type NewItemActionState = {
@@ -13,6 +14,7 @@ export type NewItemActionState = {
     id?: string;
     name?: string;
     description?: string;
+    continueadding?: string;
   };
   errors?: {
     id?: string[];
