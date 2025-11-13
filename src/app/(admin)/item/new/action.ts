@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { NewItemActionState, NewItemFormSchema } from "./schema";
 import { flashMessage } from "@thewebartisan7/next-flash-message/actions";
 import { printLabelForItem } from "@/lib/labels";
+import { AlphanumericIdentifier } from "@/lib/ids";
 
 export async function newItemAction(
     _prev: NewItemActionState | undefined,
@@ -99,10 +100,7 @@ export async function generatedNewItemId() {
 
     let generatedId = "";
     while (generatedId === "") {
-        const randomPart = Math.random()
-            .toString(36)
-            .substring(2, 2 + idLength)
-            .toUpperCase();
+        const randomPart = AlphanumericIdentifier(idLength);
         const candidateId = `${idPrefix}${randomPart}`;
 
         const existingItem = await prisma.item.findUnique({
