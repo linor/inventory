@@ -9,7 +9,7 @@ import { ItemWithAttributes, printLabelForItem } from "@/lib/labels";
 import { ignoreEnterKey } from "@/lib/noenter";
 import { faPrint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import iziToast from "izitoast";
+import { toast } from "sonner";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -29,17 +29,11 @@ function printLabel(
 ) {
     return printLabelForItem(item, category, location, variant)
         .then(() => {
-            iziToast.success({
-                title: "Success",
-                message: `Label for item "${item.name}" has been sent to the printer.`,
-            });
+            toast.success(`Label for item "${item.name}" sent to printer.`);
         })
         .catch((error) => {
+            toast.error(`Failed to print label for item "${item.name}": ${error.message}`);
             console.error("Error printing label for item:", item.id, error);
-            iziToast.error({
-                title: "Error",
-                message: `Failed to print label for item "${item.name}": ${error.message}`,
-            });
         });
 }
 

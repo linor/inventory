@@ -6,18 +6,12 @@ import { printLabelForLocation } from "@/lib/labels";
 import { ignoreEnterKey } from "@/lib/noenter";
 import { faPrint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import iziToast from "izitoast";
+import { toast } from "sonner";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuGroup,
     DropdownMenuItem,
-    DropdownMenuRadioGroup,
-    DropdownMenuRadioItem,
-    DropdownMenuSeparator,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
@@ -28,16 +22,10 @@ import {
 function printLabel(location: StorageLocation, variant: string = "default") {
     return printLabelForLocation(location, variant)
         .then(() => {
-            iziToast.success({
-                title: "Success",
-                message: `Label for location "${location.name}" has been sent to the printer.`,
-            });
+            toast.success(`Label for location "${location.name || 'Unnamed Location'}" sent to printer.`);
         })
         .catch((error) => {
-            iziToast.error({
-                title: "Error",
-                message: `Failed to print label for location "${location.name}": ${error.message}`,
-            });
+            toast.error(`Failed to print label for location "${location.name || 'Unnamed Location'}": ${error.message}`);
         });
 }
 

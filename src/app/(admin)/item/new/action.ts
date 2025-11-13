@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { NewItemActionState, NewItemFormSchema } from "./schema";
+import { flashMessage } from "@thewebartisan7/next-flash-message/actions";
 
 export async function newItemAction(
   _prev: NewItemActionState | undefined,
@@ -45,6 +46,7 @@ export async function newItemAction(
     });
 
     if (validationResult.data.continueadding) {
+      await flashMessage(`Item ${result.id} created.`, "success");
       redirect("/item/new?continueadding=true&copy=" + encodeURIComponent(result.id));
     }
 
