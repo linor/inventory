@@ -6,6 +6,7 @@ import {
     StorageLocation,
 } from "@/generated/prisma";
 import { ItemWithAttributes, printLabelForItem } from "@/lib/labels";
+import { ItemLabelVariants } from "@/lib/labeltypes";
 import { ignoreEnterKey } from "@/lib/noenter";
 import { faPrint } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -64,18 +65,11 @@ export default function PrintButton({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-52">
                     <DropdownMenuGroup>
-                        <DropdownMenuItem onClick={() => printLabel(item, location, category, "qrcode")}>
-                            QR Only (25x25)
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => printLabel(item, location, category, "itemname")}>
-                            Item Name (19x51)
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => printLabel(item, location, category, "detailed")}>
-                            Detailed (28x89)
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => printLabel(item, location, category, "fastener")}>
-                            Fastener (19x51)
-                        </DropdownMenuItem>
+                        {ItemLabelVariants.map(({ variant, label }) => (
+                            <DropdownMenuItem key={variant} onClick={() => printLabel(item, location, category, variant)}>
+                                {label}
+                            </DropdownMenuItem>
+                        ))}
                     </DropdownMenuGroup>
                 </DropdownMenuContent>
             </DropdownMenu>

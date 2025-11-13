@@ -4,13 +4,14 @@ import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { NewItemActionState, NewItemFormSchema } from "./schema";
 import { flashMessage } from "@thewebartisan7/next-flash-message/actions";
+import { printLabelForItem } from "@/lib/labels";
 
 export async function newItemAction(
-  _prev: NewItemActionState | undefined,
-  formData: FormData,
+    _prev: NewItemActionState | undefined,
+    formData: FormData,
 ): Promise<NewItemActionState | undefined> {
     const form = Object.fromEntries(formData);
-    
+
     const validationResult = NewItemFormSchema.safeParse(form);
     if (!validationResult.success) {
         console.log("Validation errors:", validationResult.error.flatten().fieldErrors);
@@ -45,34 +46,73 @@ export async function newItemAction(
         },
     });
 
+    let redirectParameters = [];
+    let printedLabel = false;
+
+    if (validationResult.data.printlabel) {
+        const category = result.categoryId ? await prisma.category.findUnique({
+            where: { id: result.categoryId || undefined },
+        }) : null;
+
+        const location = result.locationId ? await prisma.storageLocation.findUnique({
+            where: { id: result.locationId || undefined },
+        }) : null;
+
+        const itemWithAttributes = {
+            ...result,
+            attributes: customKeys.map(({ key, value }) => ({
+                key,
+                value,
+                itemId: result.id,
+            })),
+        };
+
+        try {
+            await printLabelForItem(itemWithAttributes, category, location,
+                validationResult.data.labelvariant || "default");
+
+            await flashMessage("Label sent to printer.", "success");
+        } catch (error) {
+            await flashMessage("Failed to print label.", "error");
+        }
+
+        printedLabel = true;
+        redirectParameters.push("printlabel=true");
+    }
+
+    if (validationResult.data.labelvariant) {
+        redirectParameters.push("labelvariant=" + encodeURIComponent(validationResult.data.labelvariant));
+    }
+
     if (validationResult.data.continueadding) {
-      await flashMessage(`Item ${result.id} created.`, "success");
-      redirect("/item/new?continueadding=true&copy=" + encodeURIComponent(result.id));
+        if (!printedLabel) await flashMessage(`Item ${result.id} created.`, "success");
+        redirectParameters.push("continueadding=true");
+        redirect("/item/new?" + redirectParameters.join("&") + "&copy=" + encodeURIComponent(result.id));
     }
 
     redirect("/item/" + encodeURIComponent(result.id));
 }
 
 export async function generatedNewItemId() {
-  const idPrefix = process.env.ITEM_ID_PREFIX || "INV";
-  const idLength = parseInt(process.env.ITEM_ID_LENGTH || "12", 10);
+    const idPrefix = process.env.ITEM_ID_PREFIX || "INV";
+    const idLength = parseInt(process.env.ITEM_ID_LENGTH || "12", 10);
 
-  let generatedId = "";
-  while (generatedId === "") {
-    const randomPart = Math.random()
-      .toString(36)
-      .substring(2, 2 + idLength)
-      .toUpperCase();
-    const candidateId = `${idPrefix}${randomPart}`;
+    let generatedId = "";
+    while (generatedId === "") {
+        const randomPart = Math.random()
+            .toString(36)
+            .substring(2, 2 + idLength)
+            .toUpperCase();
+        const candidateId = `${idPrefix}${randomPart}`;
 
-    const existingItem = await prisma.item.findUnique({
-      where: { id: candidateId },
-    });
+        const existingItem = await prisma.item.findUnique({
+            where: { id: candidateId },
+        });
 
-    if (!existingItem) {
-      generatedId = candidateId;
+        if (!existingItem) {
+            generatedId = candidateId;
+        }
     }
-  }
 
-  return generatedId;
+    return generatedId;
 }

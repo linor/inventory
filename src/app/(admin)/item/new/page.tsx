@@ -8,10 +8,15 @@ export default async function NewItemPage({ searchParams }: { searchParams: Prom
     const categories = await prisma.category.findMany();
     const allLocations = await prisma.storageLocation.findMany({ orderBy: { name: 'asc' } });
 
-    let prefill = (await searchParams).prefill;
-    let continueadding = (await searchParams).continueadding ? true : false;
+    const searchParamsResolved = await searchParams;
+    let prefill = searchParamsResolved.prefill;
+    const formOptions = {
+        continueadding: searchParamsResolved.continueadding ? true : false,
+        printlabel: searchParamsResolved.printlabel ? true : false,
+        labelvariant: searchParamsResolved.labelvariant ? String(searchParamsResolved.labelvariant) : "default",
+    };
 
-    let copy = (await searchParams).copy;
+    let copy = searchParamsResolved.copy;
     let itemToCopy: NewItemStartValue | null = null;
 
     if (copy) {
@@ -41,7 +46,7 @@ export default async function NewItemPage({ searchParams }: { searchParams: Prom
             />
             <main className="shrink-0 items-center gap-2 px-4">
                 <h1>New item</h1>
-                <NewItemForm categories={categories} locations={allLocations} id={id} source={itemToCopy} continueadding={continueadding} />
+                <NewItemForm categories={categories} locations={allLocations} id={id} source={itemToCopy} options={formOptions} />
                 <FlashMessageProvider />
             </main>
         </>
