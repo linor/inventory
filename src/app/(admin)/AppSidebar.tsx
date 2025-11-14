@@ -61,7 +61,7 @@ export async function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <a href="/items">
+                            <a href="/">
                                 <div className="flex flex-col gap-0.5 leading-none">
                                     <span className="font-large">
                                         Inventory
