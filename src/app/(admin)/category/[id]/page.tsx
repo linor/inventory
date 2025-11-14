@@ -27,7 +27,7 @@ export default async function LocationPage({
 
     const categoryDetails = await prisma.category.findUnique({
         where: { id: Number(id) },
-        include: { keys: true },
+        include: { keys: true, items: true },
     });
 
     if (!categoryDetails) {
@@ -84,6 +84,35 @@ export default async function LocationPage({
                                         </TableCell>
                                         <TableCell className="font-medium">
                                             {keyValue.name}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                )}
+
+                {categoryDetails?.items && categoryDetails.items.length > 0 && (
+                    <div className="w-full rounded-xl border mb-8 mt-4 overflow-hidden">
+                        <Table className="w-full">
+                            <TableHeader>
+                                <TableRow className="bg-muted font-heavy">
+                                    <TableHead>Item</TableHead>
+                                    <TableHead className="w-[100px] text-right">
+                                        ID
+                                    </TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {categoryDetails.items.map((item) => (
+                                    <TableRow key={item.id}>
+                                        <TableCell className="font-medium">
+                                            <Link href={`/item/${item.id}`}>
+                                                {item.name}
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            {item.id}
                                         </TableCell>
                                     </TableRow>
                                 ))}
