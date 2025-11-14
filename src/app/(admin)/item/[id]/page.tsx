@@ -144,7 +144,8 @@ export default async function ViewItemPage({
                         )}
                         <span className="text-xl">
                             <Link href={`/location/${location.id}`} className="font-bold">
-                                {location.name}
+                                {location.name ? location.name : <span className="text-gray-400">Unnamed Location</span>}
+                                {location.contents ? <span className="text-gray-300"> ({location.contents}) </span> : ""}
                             </Link>
                         </span>
                     </div>
