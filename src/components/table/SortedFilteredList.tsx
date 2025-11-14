@@ -54,7 +54,7 @@ export default function SortedFilteredList<E>({
         getFilteredRowModel: getFilteredRowModel(),
         onPaginationChange: setPagination,
         onGlobalFilterChange: setGlobalFilter,
-        globalFilterFn: filterFn,
+        ...(filterFn != null ? { globalFilterFn: filterFn } : {}),
         state: { pagination, globalFilter },
     });
 

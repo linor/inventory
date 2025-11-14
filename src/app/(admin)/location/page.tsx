@@ -10,6 +10,13 @@ export default async function Page() {
     orderBy: { name: "asc" },
   });
 
+  locations.sort((a, b) =>
+    (a.name ?? "").localeCompare(b.name ?? "", undefined, {
+      numeric: true,
+      sensitivity: "base",
+    })
+  );
+
   return (
     <>
       <PageHeader breadcrumbs={[{ name: "All Locations" }]} />

@@ -20,7 +20,7 @@ export default function NewLocationForm({
   const [isGeneratingId, setIsGeneratingId] = useState(false);
   const [state, action, isPending] = useActionState(newLocationAction, {
     form: {
-      contents: process.env.STORAGE_LOCATION_CONTENTS || "Storage Location",
+      contents: process.env.STORAGE_LOCATION_CONTENTS || "Storage container",
     },
   });
   const [generatedId, setGeneratedId] = useState(id || "");

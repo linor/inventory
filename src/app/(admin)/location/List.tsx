@@ -34,6 +34,19 @@ export default function LocationList({
             ),
         },
         {
+            accessorKey: "location.contents",
+            header: "Contents",
+            cell: (info) => (
+                <>
+                    {info.getValue() ? (
+                        (info.getValue() as React.ReactNode)
+                    ) : (
+                        <span className="text-gray-400">Storage container</span>
+                    )}
+                </>
+            ),
+        },
+        {
             accessorKey: "location.id",
             header: () => <div className="w-[100px] text-right">ID</div>,
             cell: (info) => (
