@@ -1,28 +1,21 @@
 import {
     SidebarInset,
     SidebarProvider,
-    SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
-import {
-    Breadcrumb,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@radix-ui/react-separator";
-import { Barcode } from "lucide-react";
 import BarcodeScannerInput from "./BarcodeScannerInput";
-export default function AdminLayout({
+import { cookies } from "next/headers"
+export default async function AdminLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const cookieStore = await cookies()
+    const defaultOpen = cookieStore.get("sidebar_state")?.value === "true"
+
     return (
         <BarcodeScannerInput>
-            <SidebarProvider>
+            <SidebarProvider defaultOpen={defaultOpen}>
                 <AppSidebar />
                 <SidebarInset>
                     {children}
