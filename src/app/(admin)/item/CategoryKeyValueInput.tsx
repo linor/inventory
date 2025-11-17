@@ -1,9 +1,6 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { Category } from "@/generated/prisma";
-import prisma from "@/lib/prisma";
-import { determineKeyValuePairsForCategory } from "./CategoryKeyValueActions";
+import { CategoryWithKeys, mergeKeyValuePairsForCategory } from "./CategoryKeyValueActions";
 import { Input } from "@heroui/react";
-import { start } from "repl";
 
 export type CategoryKeyValue = {
   key: string;
@@ -21,11 +18,15 @@ export function CategoryKeyValueInputState(startValues: CategoryKeyValue[] | nul
   );
 
   async function updateCategoryKeyValue(categoryId: number | null) {
-    const newValues = await determineKeyValuePairsForCategory(
-      categoryId,
-      keyValue || [],
-    );
-    setKeyValue(newValues);
+    return fetch(`/api/category/${categoryId}`, { method: "GET" })
+      .then((res) => res.json())
+      .then(async (category: CategoryWithKeys) => {
+        const newValues = mergeKeyValuePairsForCategory(
+          category,
+          keyValue || [],
+        );
+        setKeyValue(newValues);
+      });
   }
 
   return [keyValue, setKeyValue, updateCategoryKeyValue];

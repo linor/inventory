@@ -1,11 +1,12 @@
 import prisma from "@/lib/prisma";
 import PageHeader from "../../PageHeader";
 import NewItemForm, { NewItemStartValue } from "./form";
-import { determineKeyValuePairsForCategory } from "../CategoryKeyValueActions";
+import { mergeKeyValuePairsForCategory } from "../CategoryKeyValueActions";
 import { FlashMessageProvider } from "@thewebartisan7/next-flash-message/components";
+import { convertItemAttributesToKeyValuePairs } from "../utils";
 
 export default async function NewItemPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
-    const categories = await prisma.category.findMany();
+    const categories = await prisma.category.findMany({ include: { keys: true } }) || [];
     const allLocations = await prisma.storageLocation.findMany({ orderBy: { name: 'asc' } });
 
     const searchParamsResolved = await searchParams;
@@ -24,16 +25,15 @@ export default async function NewItemPage({ searchParams }: { searchParams: Prom
             where: { id: typeof copy === "string" ? copy : "" },
             include: { attributes: true },
         });
+        const sourceCategory = sourceItem?.categoryId
+            ? categories.find((cat) => cat.id === sourceItem.categoryId)
+            : null;
 
         if (sourceItem) {
             itemToCopy = {
                 item: sourceItem,
-                categoryKeyValues: sourceItem.categoryId ? await determineKeyValuePairsForCategory(sourceItem.categoryId, sourceItem.attributes.map(attr => ({
-                    key: attr.key,
-                    name: "",
-                    value: attr.value,
-                }))) : [],
-            };
+                categoryKeyValues: mergeKeyValuePairsForCategory(sourceCategory, convertItemAttributesToKeyValuePairs(sourceItem.attributes))
+            }
         }
     }
 

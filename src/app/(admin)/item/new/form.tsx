@@ -4,16 +4,11 @@ import { Category, StorageLocation } from "@/generated/prisma";
 import { ignoreEnterKey } from "@/lib/noenter";
 import { Button, Form, Input, Textarea } from "@heroui/react";
 import { useState, useActionState } from "react";
-import { id } from "zod/v4/locales";
 import { NewItemActionState, NewItemFormSchema } from "./schema";
 import { newItemAction } from "./action";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotate } from "@fortawesome/free-solid-svg-icons";
-import CategorySelect from "../CategorySelect";
-import LocationSelectInput from "../../location/LocationSelect";
 import { generatedNewItemId } from "./action";
-import CategoryKeyValueInput, { CategoryKeyValue, CategoryKeyValueInputState } from "../CategoryKeyValueInput";
-import { ItemWithAttributes } from "@/lib/labels";
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import {
@@ -24,11 +19,9 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { ItemLabelVariants } from "@/lib/labeltypes";
-
-export type NewItemStartValue = {
-    item: ItemWithAttributes;
-    categoryKeyValues: CategoryKeyValue[];
-};
+import { Share } from "next/font/google";
+import SharedItemForm from "../SharedForm";
+import { determineInitialFormState, ItemFormStartValue } from "../SharedFormSchema";
 
 export type NewItemFormOptions = {
     continueadding?: boolean;
@@ -40,7 +33,7 @@ interface NewItemFormProps {
     categories: Category[];
     locations?: StorageLocation[];
     id?: string;
-    source?: NewItemStartValue | null;
+    source?: ItemFormStartValue | null;
     options?: NewItemFormOptions;
 }
 
@@ -51,19 +44,8 @@ export default function NewItemForm({ categories, locations, id, source, options
             printlabel: options?.printlabel ? "true" : undefined,
             labelvariant: options?.labelvariant ? options.labelvariant : "default",
         },
+        ...determineInitialFormState(source),        
     };
-    const startCategoryKeyValues: CategoryKeyValue[] = [];
-
-    if (source) {
-        initialState.form = {
-            ...initialState.form,
-            id: source.item.id,
-            name: source.item.name,
-            description: source.item.description || ""
-        };
-
-        startCategoryKeyValues.push(...source.categoryKeyValues);
-    }
 
     const [isGeneratingId, setIsGeneratingId] = useState(false);
     const [state, action, isPending] = useActionState(
@@ -71,7 +53,6 @@ export default function NewItemForm({ categories, locations, id, source, options
         initialState
     );
     const [generatedId, setGeneratedId] = useState(id || "");
-    const [categoryKeyValues, setCategoryKeyValues, updateCategoryKeyValue] = CategoryKeyValueInputState(startCategoryKeyValues);
 
     if (!categories) {
         categories = [];
@@ -114,32 +95,7 @@ export default function NewItemForm({ categories, locations, id, source, options
                     </Button>
                 }
             />
-            <Input
-                isRequired
-                errorMessage="Please enter a valid name"
-                label="Name"
-                labelPlacement="inside"
-                name="name"
-                placeholder="Enter a name for this item"
-                type="text"
-                defaultValue={state?.form?.name}
-                onKeyDown={ignoreEnterKey}
-            />
-            <Textarea
-                label="Description"
-                placeholder="Enter your description"
-                name="description"
-                defaultValue={state?.form?.description}
-            />
-            <CategorySelect categories={categories} onChange={(i) => updateCategoryKeyValue(i)} initialCategoryId={source?.item?.categoryId} />
-            <LocationSelectInput
-                locations={locations || []}
-                keyName="locationId"
-                label="Storage Location"
-                parentId={source?.item?.locationId}
-            />
-
-            <CategoryKeyValueInput keyvalues={categoryKeyValues} updateValues={setCategoryKeyValues} />
+            <SharedItemForm state={state} locations={locations} categories={categories} sourceItem={source}/>
             <div className="flex items-center gap-4 mt-4">
                 <Button
                     color="primary"

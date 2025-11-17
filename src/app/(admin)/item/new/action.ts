@@ -6,6 +6,7 @@ import { NewItemActionState, NewItemFormSchema } from "./schema";
 import { flashMessage } from "@thewebartisan7/next-flash-message/actions";
 import { printLabelForItem } from "@/lib/labels";
 import { AlphanumericIdentifier } from "@/lib/ids";
+import { convertFormDataToCustomKeys } from "../CategoryKeyValueActions";
 
 export async function newItemAction(
     _prev: NewItemActionState | undefined,
@@ -22,18 +23,7 @@ export async function newItemAction(
         };
     }
 
-    let customKeys = [];
-    for (const entry of formData.entries()) {
-        const [key, value] = entry;
-        if (key.startsWith("param_")) {
-            const index = key.split("_")[1];
-            const customValue = formData.get(`param_${index}`);
-            if (value && customValue && typeof value === "string" && typeof customValue === "string") {
-                customKeys.push({ key: index, value: customValue });
-            }
-        }
-    }
-
+    const customKeys = convertFormDataToCustomKeys(formData);
     const result = await prisma.item.create({
         data: {
             id: validationResult.data.id,
@@ -42,7 +32,7 @@ export async function newItemAction(
             categoryId: validationResult.data.categoryId || null,
             locationId: validationResult.data.locationId || null,
             attributes: {
-                create: customKeys,
+                create: customKeys
             },
         },
     });

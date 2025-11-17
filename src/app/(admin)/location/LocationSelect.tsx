@@ -24,7 +24,14 @@ export default function LocationSelectInput({
     keyName?: string;
     label?: string;
 }) {
-    const groupedLocations = groupLocations(locations || [], excludeIds);
+    const sortedLocations = (locations || []).sort((a, b) =>
+    (a.name ?? "").localeCompare(b.name ?? "", undefined, {
+      numeric: true,
+      sensitivity: "base",
+    })
+  );
+
+    const groupedLocations = groupLocations(sortedLocations, excludeIds);
     const startValue: FieldData = {
         selectedKey: "",
         inputValue: "",

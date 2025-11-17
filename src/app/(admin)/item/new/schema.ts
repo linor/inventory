@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { ItemFormState } from "../SharedFormSchema";
 
 export const NewItemFormSchema = z.object({
   id: z.string().min(1, { message: "ID is required." }).trim(),
@@ -11,18 +12,10 @@ export const NewItemFormSchema = z.object({
   labelvariant: z.string().optional(),
 });
 
-export type NewItemActionState = {
+export type NewItemActionState = ItemFormState & {
   form?: {
-    id?: string;
-    name?: string;
-    description?: string;
     continueadding?: string;
     printlabel?: string;
     labelvariant?: string;
-  };
-  errors?: {
-    id?: string[];
-    name?: string[];
-    description?: string[];
   };
 };
