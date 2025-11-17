@@ -31,6 +31,7 @@ import {
 import {
     MoreHorizontalIcon,
 } from "lucide-react"
+import DeleteItem from "./DeleteItem";
 
 export default async function ViewItemPage({
     params,
@@ -114,10 +115,7 @@ export default async function ViewItemPage({
                                     </DropdownMenuGroup>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuGroup>
-                                        <DropdownMenuItem variant="destructive">
-                                            <FontAwesomeIcon icon={faTrash} />
-                                            Delete
-                                        </DropdownMenuItem>
+                                        <DeleteItem item={item} />
                                     </DropdownMenuGroup>
                                 </DropdownMenuContent>
                             </DropdownMenu>
