@@ -1,9 +1,10 @@
 import prisma from "@/lib/prisma";
 import PageHeader from "../../PageHeader";
-import NewItemForm, { NewItemStartValue } from "./form";
+import NewItemForm from "./form";
 import { mergeKeyValuePairsForCategory } from "../CategoryKeyValueActions";
 import { FlashMessageProvider } from "@thewebartisan7/next-flash-message/components";
 import { convertItemAttributesToKeyValuePairs } from "../utils";
+import { ItemFormStartValue } from "../SharedFormSchema";
 
 export default async function NewItemPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
     const categories = await prisma.category.findMany({ include: { keys: true } }) || [];
@@ -18,7 +19,7 @@ export default async function NewItemPage({ searchParams }: { searchParams: Prom
     };
 
     let copy = searchParamsResolved.copy;
-    let itemToCopy: NewItemStartValue | null = null;
+    let itemToCopy: ItemFormStartValue | null = null;
 
     if (copy) {
         const sourceItem = await prisma.item.findUnique({
