@@ -37,6 +37,12 @@ export default async function LocationPage({
         { name: "Categories", href: "/category" },
         { name: categoryDetails?.name || "Unknown category", href: "" },
     ];
+    categoryDetails?.items.sort((a, b) =>
+        (a.name ?? "").localeCompare(b.name ?? "", undefined, {
+            numeric: true,
+            sensitivity: "base",
+        })
+    );
 
     return (
         <>

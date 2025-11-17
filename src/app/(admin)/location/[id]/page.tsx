@@ -32,6 +32,19 @@ export default async function LocationPage({
         include: { children: true, parent: true, items: true },
     });
 
+    locationDetails?.children.sort((a, b) =>
+        (a.name ?? "").localeCompare(b.name ?? "", undefined, {
+            numeric: true,
+            sensitivity: "base",
+        })
+    );
+    locationDetails?.items.sort((a, b) =>
+        (a.name ?? "").localeCompare(b.name ?? "", undefined, {
+            numeric: true,
+            sensitivity: "base",
+        })
+    );
+
     const allParents = await getAllParents(locationDetails);
     const breadcrumbs = allParents
         .slice()
@@ -95,6 +108,7 @@ export default async function LocationPage({
                             <TableHeader>
                                 <TableRow className="bg-muted font-heavy">
                                     <TableHead>Sublocation</TableHead>
+                                    <TableHead>Contents</TableHead>
                                     <TableHead className="w-[100px] text-right">
                                         ID
                                     </TableHead>
@@ -109,6 +123,13 @@ export default async function LocationPage({
                                             >
                                                 {child.name}
                                             </Link>
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                            {child.contents ? (
+                                                child.contents
+                                            ) : (
+                                                <span className="text-gray-400">Storage container</span>
+                                            )}
                                         </TableCell>
                                         <TableCell className="text-right">
                                             {child.id}
