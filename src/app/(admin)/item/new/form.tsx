@@ -40,11 +40,11 @@ interface NewItemFormProps {
 export default function NewItemForm({ categories, locations, id, source, options }: NewItemFormProps) {
     const initialState: NewItemActionState = {
         form: {
+            ...determineInitialFormState(source)?.form,
             continueadding: options?.continueadding ? "true" : undefined,
             printlabel: options?.printlabel ? "true" : undefined,
             labelvariant: options?.labelvariant ? options.labelvariant : "default",
         },
-        ...determineInitialFormState(source),        
     };
 
     const [isGeneratingId, setIsGeneratingId] = useState(false);

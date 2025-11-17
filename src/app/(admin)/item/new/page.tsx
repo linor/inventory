@@ -11,6 +11,7 @@ export default async function NewItemPage({ searchParams }: { searchParams: Prom
     const allLocations = await prisma.storageLocation.findMany({ orderBy: { name: 'asc' } });
 
     const searchParamsResolved = await searchParams;
+    
     let prefill = searchParamsResolved.prefill;
     const formOptions = {
         continueadding: searchParamsResolved.continueadding ? true : false,
