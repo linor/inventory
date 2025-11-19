@@ -1,7 +1,7 @@
 "use client";
 
 import { CategoryKey } from "@/generated/prisma";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faSquarePlus, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Button, Input } from "@heroui/react";
 import { useState } from "react";
@@ -30,6 +30,23 @@ export default function CustomKeys({
         const updatedPairs = pairs.filter((_, i) => i !== index);
         setPairs(updatedPairs);
     };
+
+    function addRequiredFastenerKeys() {
+        const requiredKeys = [
+            { key: "size", value: "Size", defaultValue: "" },
+            { key: "toolsize", value: "Tool Size", defaultValue: "" },
+            { key: "type", value: "Type", defaultValue: "" },
+            { key: "isodin", value: "DIN", defaultValue: "" },
+        ];
+
+        const updatedPairs = [...pairs].filter(pair => pair.key !== "" || pair.value !== "" || pair.defaultValue !== "");
+        for (const reqKey of requiredKeys) {
+            if (!updatedPairs.some(pair => pair.key === reqKey.key)) {
+                updatedPairs.push(reqKey);
+            }
+        }
+        setPairs(updatedPairs);
+    }
 
     return (
         <div className="w-full rounded-xl border mt-4 overflow-hidden p-4">
@@ -85,15 +102,21 @@ export default function CustomKeys({
                     <button
                         type="button"
                         onClick={() => removePair(index)}
-                        className="text-red-500"
+                        className="hover:text-red-500"
                     >
                         <FontAwesomeIcon icon={faTrash} />
                     </button>
                 </div>
             ))}
-            <Button type="button" onPress={addPair} className="mt-4">
-                Add Field
-            </Button>
+            <div className="flex items-center mt-4 space-x-2">
+                <Button type="button" onPress={addPair}>
+                    Add Field
+                </Button>
+                <span className="text-sm ml-6 cursor-pointer hover:underline" onClick={addRequiredFastenerKeys}>
+                    <FontAwesomeIcon icon={faSquarePlus} className="mr-1" />
+                    Add required keys for fastener label type
+                </span>
+            </div>
         </div>
     );
 }
