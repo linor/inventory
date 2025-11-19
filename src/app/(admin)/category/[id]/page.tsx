@@ -58,6 +58,11 @@ export default async function LocationPage({
                                 {categoryDetails?.description}
                             </p>
                         )}
+                        {categoryDetails?.defaultLabelVariant && (
+                            <p className="text-gray-600 mt-2 italic">
+                                Default label type: {categoryDetails.defaultLabelVariant}
+                            </p>
+                        )}
                     </div>
                     <div className="flex gap-2">
                         <ButtonGroup>

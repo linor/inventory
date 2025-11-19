@@ -65,6 +65,10 @@ export async function printLabelForItem(item: ItemWithAttributes, category?: Cat
         }
     }
 
+    if (variant === "default" && category?.defaultLabelVariant && category.defaultLabelVariant !== "") {
+        variant = category.defaultLabelVariant;
+    }
+
     const label = {
         type: "item",
         id: item.id,

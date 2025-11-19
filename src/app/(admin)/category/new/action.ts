@@ -22,7 +22,8 @@ export async function newCategoryAction(
     const categoryData = {
         name: validationResult.data.name,
         description: validationResult.data.description || null,
-        keys: { create: determineKeyPairs(formData) }, 
+        keys: { create: determineKeyPairs(formData) },
+        defaultLabelVariant: validationResult.data.labelVariant || null,
     };
 
     const result = await prisma.category.create({

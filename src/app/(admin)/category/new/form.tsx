@@ -5,6 +5,8 @@ import { newCategoryAction } from "./action";
 import { Button, Form, Input, Textarea } from "@heroui/react";
 import { ignoreEnterKey } from "@/lib/noenter";
 import CustomKeys from "../CustomKeys";
+import { ItemLabelVariants } from "@/lib/labeltypes";
+import { Select, SelectSection, SelectItem } from "@heroui/select";
 
 export default function NewCategoryForm() {
     const [state, action, isPending] = useActionState(newCategoryAction, {});
@@ -28,6 +30,11 @@ export default function NewCategoryForm() {
                 name="description"
                 defaultValue={state?.form?.description}
             />
+            <Select label="Default label type" placeholder="Select a label type" name="labelVariant">
+                {ItemLabelVariants.map((variant) => (
+                    <SelectItem key={variant.variant}>{variant.label}</SelectItem>
+                ))}
+            </Select>
 
             <CustomKeys initialValue={[]} />
 

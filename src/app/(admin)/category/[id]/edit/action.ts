@@ -32,12 +32,12 @@ export default async function updateCategoryAction(
     }
 
     const newCategoryKeys = determineKeyPairs(formData);
-console.log("New Category Keys:", newCategoryKeys);
     await prisma.category.update({
         where: { id: validationResult.data.id },
         data: {
             name: validationResult.data.name,
             description: validationResult.data.description || null,
+            defaultLabelVariant: validationResult.data.labelVariant || null,
         },
     });
 
@@ -53,7 +53,6 @@ console.log("New Category Keys:", newCategoryKeys);
     );
 
     for (const key of keysToUpdate) {
-        console.log("Updating key:", key);
         await prisma.categoryKey.updateMany({
             where: { categoryId: existingCategory.id, key: key.key },
             data: { name: key.name, defaultValue: key.defaultValue || null },
