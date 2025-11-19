@@ -80,6 +80,7 @@ export default async function LocationPage({
                                 <TableRow className="bg-muted font-heavy">
                                     <TableHead>Custom Key</TableHead>
                                     <TableHead>Display Name</TableHead>
+                                    <TableHead>Default Value</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -90,6 +91,9 @@ export default async function LocationPage({
                                         </TableCell>
                                         <TableCell className="font-medium">
                                             {keyValue.name}
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                            {keyValue.defaultValue || "-"}
                                         </TableCell>
                                     </TableRow>
                                 ))}

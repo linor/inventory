@@ -3,6 +3,7 @@
 import { Category, Item, ItemAttribute, StorageLocation } from "@/generated/prisma";
 import prisma from "./prisma";
 import zmq from "zeromq";
+import { CategoryWithKeys } from "./types";
 
 async function printLabel(data: any) {
     const printQueueAddress = process.env.PRINT_QUEUE_ADDRESS;
@@ -54,13 +55,22 @@ export type ItemWithAttributes = Item & {
     attributes: ItemAttribute[];
 };
 
-export async function printLabelForItem(item: ItemWithAttributes, category?: Category | null, location?: StorageLocation | null, variant: string = "default") {
+export async function printLabelForItem(item: ItemWithAttributes, category?: CategoryWithKeys | null, location?: StorageLocation | null, variant: string = "default") {
+    const itemAttributes = Object.fromEntries((item.attributes || []).map(attr => [attr.key, attr.value]));
+    if (category?.keys) {
+        for (const key of category.keys) {
+            if (key.key && !itemAttributes[key.key] && key.defaultValue) {
+                itemAttributes[key.key] = key.defaultValue;
+            }
+        }
+    }
+
     const label = {
         type: "item",
         id: item.id,
         name: item.name,
         description: item.description,
-        attributes: Object.fromEntries(item.attributes.map(attr => [attr.key, attr.value])),
+        attributes: itemAttributes,
         location: location?.id,
         ...(category && { category: { id: category.id, name: category.name } }),
         variant: variant,

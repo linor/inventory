@@ -1,12 +1,9 @@
-import prisma from "@/lib/prisma";
 import { CategoryKeyValue } from "./CategoryKeyValueInput";
-import { Category, CategoryKey } from "@/generated/prisma/edge";
+import { CategoryWithKeys } from "@/lib/types";
 
 function filterUsedValues(ckv: CategoryKeyValue): boolean {
     return typeof ckv.value === "string" && ckv.value.trim() !== "";
 }
-
-export type CategoryWithKeys = Category & { keys: CategoryKey[] };
 
 export function mergeKeyValuePairsForCategory(
     category: CategoryWithKeys | null | undefined,

@@ -43,6 +43,7 @@ export async function newItemAction(
     if (validationResult.data.printlabel) {
         const category = result.categoryId ? await prisma.category.findUnique({
             where: { id: result.categoryId || undefined },
+            include: { keys: true },
         }) : null;
 
         const location = result.locationId ? await prisma.storageLocation.findUnique({

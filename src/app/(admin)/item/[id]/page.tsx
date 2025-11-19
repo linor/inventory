@@ -33,6 +33,13 @@ import {
 } from "lucide-react"
 import DeleteItem from "./DeleteItem";
 
+type DisplayAttribute = {
+    key: string;
+    name: string;
+    value?: string | null;
+    defaultValue?: string | null;
+}
+
 export default async function ViewItemPage({
     params,
 }: {
@@ -66,10 +73,16 @@ export default async function ViewItemPage({
         include: { keys: true },
     }) : undefined;
 
-    const categoryKeyToName = category?.keys.reduce<Record<string, string>>((acc, key) => {
-        acc[key.key] = key.name || key.key;
-        return acc;
-    }, {}) || {};
+    const attributesToDisplay: DisplayAttribute[] = (item.attributes || []).map(attr => ({ key: attr.key, name: attr.key, value: attr.value }));
+    for(const categoryKey of category?.keys || []) {
+        const attribute = attributesToDisplay.find(attr => attr.key === categoryKey.key);
+        if (attribute) {
+            attribute.name = categoryKey.name || categoryKey.key;
+            attribute.defaultValue = categoryKey.defaultValue;
+        } else {
+            attributesToDisplay.push({ key: categoryKey.key, name: categoryKey.name || categoryKey.key, defaultValue: categoryKey.defaultValue });
+        }
+    }
 
     return (
         <>
@@ -160,23 +173,30 @@ export default async function ViewItemPage({
                     </div>
                 )}
 
-                {item?.attributes && item.attributes.length > 0 && (
+                {attributesToDisplay && attributesToDisplay.length > 0 && (
                     <div className="w-full rounded-xl border mb-8 mt-4 overflow-hidden">
                         <Table className="w-full">
                             <TableHeader>
                                 <TableRow className="bg-muted font-heavy">
-                                    <TableHead>Custom Key</TableHead>
-                                    <TableHead>Display Name</TableHead>
+                                    <TableHead>Attribute</TableHead>
+                                    <TableHead>Value</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {item.attributes.map((keyValue) => (
-                                    <TableRow key={keyValue.key}>
+                                {attributesToDisplay.map((attr) => (
+                                    <TableRow key={attr.key}>
                                         <TableCell className="font-medium">
-                                            {categoryKeyToName[keyValue.key] ? categoryKeyToName[keyValue.key] : keyValue.key}
+                                            {attr.name}
                                         </TableCell>
                                         <TableCell className="font-medium">
-                                            {keyValue.value}
+                                            {attr.value && attr.value.length > 0
+                                                ? attr.value
+                                                : (
+                                                    <span className="text-gray-300">
+                                                        {attr.defaultValue || "-"}
+                                                    </span>
+                                                )
+                                            }
                                         </TableCell>
                                     </TableRow>
                                 ))}

@@ -21,11 +21,12 @@ import {
 import {
     MoreHorizontalIcon,
 } from "lucide-react"
+import { CategoryWithKeys } from "@/lib/types";
 
 function printLabel(
     item: ItemWithAttributes,
     location?: StorageLocation | null,
-    category?: Category | null,
+    category?: CategoryWithKeys | null,
     variant: string = "default",
 ) {
     return printLabelForItem(item, category, location, variant)
@@ -44,7 +45,7 @@ export default function PrintButton({
     location,
 }: {
     item: ItemWithAttributes;
-    category?: Category | null;
+    category?: CategoryWithKeys | null;
     location?: StorageLocation | null;
 }) {
     return (

@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction } from "react";
-import { CategoryWithKeys, mergeKeyValuePairsForCategory } from "./CategoryKeyValueActions";
+import { mergeKeyValuePairsForCategory } from "./CategoryKeyValueActions";
 import { Input } from "@heroui/react";
+import { CategoryWithKeys } from "@/lib/types";
 
 export type CategoryKeyValue = {
   key: string;

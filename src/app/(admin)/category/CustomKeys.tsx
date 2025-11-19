@@ -1,7 +1,9 @@
 "use client";
 
 import { CategoryKey } from "@/generated/prisma";
-import { Button } from "@heroui/react";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Button, Input } from "@heroui/react";
 import { useState } from "react";
 
 export default function CustomKeys({
@@ -9,7 +11,9 @@ export default function CustomKeys({
 }: {
     initialValue?: CategoryKey[];
 }) {
-    const initialPairs = initialValue && initialValue.length > 0 ? initialValue.map(k => ({ key: k.key, value: k.name })) : [{ key: "", value: "" }];
+    const initialPairs = initialValue && initialValue.length > 0
+        ? initialValue.map(k => ({ key: k.key, value: k.name, defaultValue: k.defaultValue }))
+        : [{ key: "", value: "", defaultValue: "" }];
     const [pairs, setPairs] = useState(initialPairs);
 
     const handleChange = (index: number, field: string, value: string) => {
@@ -19,7 +23,7 @@ export default function CustomKeys({
     };
 
     const addPair = () => {
-        setPairs([...pairs, { key: "", value: "" }]);
+        setPairs([...pairs, { key: "", value: "", defaultValue: "" }]);
     };
 
     const removePair = (index: number) => {
@@ -33,9 +37,13 @@ export default function CustomKeys({
 
             {pairs.map((pair, index) => (
                 <div key={index} className="flex items-center space-x-2 mb-2">
-                    <input
+                    <Input
+                        errorMessage="Please enter a valid key"
+                        label="Key"
+                        labelPlacement="inside"
+                        name={`key[${index}]`}
+                        placeholder="Enter a key for this category"
                         type="text"
-                        placeholder="Key"
                         value={pair.key}
                         onChange={(e) => {
                             const val = e.target.value.replace(
@@ -44,27 +52,42 @@ export default function CustomKeys({
                             );
                             handleChange(index, "key", val);
                         }}
-                        className="border p-2 w-1/2"
-                        name={`key[${index}]`}
                         pattern="[a-zA-Z0-9_-]*"
                         title="Only letters, numbers, _ and - are allowed"
+                        className="w-1/3"
                     />
-                    <input
-                        type="text"
-                        placeholder="Name"
-                        value={pair.value || ""}
-                        onChange={(e) =>
-                            handleChange(index, "value", e.target.value)
-                        }
-                        className="border p-2 w-1/2"
+                    <Input
+                        errorMessage="Please enter a valid name"
+                        label="Name"
+                        labelPlacement="inside"
                         name={`value[${index}]`}
+                        placeholder="Enter a name for this category"
+                        type="text"
+                        value={pair.value || ""}
+                        onChange={(e) => {
+                            handleChange(index, "value", e.target.value);
+                        }}
+                        className="w-1/3"
+                    />
+                    <Input
+                        errorMessage="Please enter a valid default value"
+                        label="Default Value"
+                        labelPlacement="inside"
+                        name={`defaultValue[${index}]`}
+                        placeholder="Enter a default value for this key"
+                        type="text"
+                        value={pair.defaultValue || ""}
+                        onChange={(e) => {
+                            handleChange(index, "defaultValue", e.target.value);
+                        }}
+                        className="w-1/3"
                     />
                     <button
                         type="button"
                         onClick={() => removePair(index)}
                         className="text-red-500"
                     >
-                        ✕
+                        <FontAwesomeIcon icon={faTrash} />
                     </button>
                 </div>
             ))}
