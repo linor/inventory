@@ -4,6 +4,7 @@ import PageHeader from "../PageHeader";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
 import LocationList from "./List";
+import { FlashMessageProvider } from "@thewebartisan7/next-flash-message/components";
 
 export default async function Page() {
   const locations = await prisma.storageLocation.findMany({
@@ -23,6 +24,7 @@ export default async function Page() {
       <main className="shrink-0 items-center gap-2 px-4">
         <LocationList location={locations}/>
       </main>
+      <FlashMessageProvider />
     </>
   );
 }

@@ -20,6 +20,18 @@ import {
     ButtonGroupText,
 } from "@/components/ui/button-group"
 import { Button } from "@/components/ui/button"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+    DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu"
+import {
+    MoreHorizontalIcon,
+} from "lucide-react"
+import DeleteLocation from "./DeleteLocation";
 
 export default async function LocationPage({
     params,
@@ -73,7 +85,7 @@ export default async function LocationPage({
                     <div>
                         <span className="text-3xl font-bold">
                             {locationDetails?.name || "Unnamed Location"} {locationDetails?.contents &&
-                            `(${locationDetails.contents})`}
+                                `(${locationDetails.contents})`}
                         </span>
                         <div className="text-sm text-gray-600 mt-1">
                             {locationDetails?.id}
@@ -94,6 +106,18 @@ export default async function LocationPage({
                                     <FontAwesomeIcon icon={faPenToSquare} /> edit
                                 </Link>
                             </Button>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" size="icon">
+                                        <MoreHorizontalIcon />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-52">
+                                    <DropdownMenuGroup>
+                                        <DeleteLocation location={locationDetails!} />
+                                    </DropdownMenuGroup>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </ButtonGroup>
                         <ButtonGroup>
                             <PrintButton location={locationDetails!} />
@@ -103,43 +127,43 @@ export default async function LocationPage({
 
                 {locationDetails?.children &&
                     locationDetails.children.length > 0 && (
-                    <div className="w-full rounded-xl border mb-8 mt-4 overflow-hidden">
-                        <Table className="w-full">
-                            <TableHeader>
-                                <TableRow className="bg-muted font-heavy">
-                                    <TableHead>Sublocation</TableHead>
-                                    <TableHead>Contents</TableHead>
-                                    <TableHead className="w-[100px] text-right">
-                                        ID
-                                    </TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {locationDetails.children.map((child) => (
-                                    <TableRow key={child.id}>
-                                        <TableCell className="font-medium">
-                                            <Link
-                                                href={`/location/${child.id}`}
-                                            >
-                                                {child.name}
-                                            </Link>
-                                        </TableCell>
-                                        <TableCell className="font-medium">
-                                            {child.contents ? (
-                                                child.contents
-                                            ) : (
-                                                <span className="text-gray-400">Storage container</span>
-                                            )}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            {child.id}
-                                        </TableCell>
+                        <div className="w-full rounded-xl border mb-8 mt-4 overflow-hidden">
+                            <Table className="w-full">
+                                <TableHeader>
+                                    <TableRow className="bg-muted font-heavy">
+                                        <TableHead>Sublocation</TableHead>
+                                        <TableHead>Contents</TableHead>
+                                        <TableHead className="w-[100px] text-right">
+                                            ID
+                                        </TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                )}
+                                </TableHeader>
+                                <TableBody>
+                                    {locationDetails.children.map((child) => (
+                                        <TableRow key={child.id}>
+                                            <TableCell className="font-medium">
+                                                <Link
+                                                    href={`/location/${child.id}`}
+                                                >
+                                                    {child.name}
+                                                </Link>
+                                            </TableCell>
+                                            <TableCell className="font-medium">
+                                                {child.contents ? (
+                                                    child.contents
+                                                ) : (
+                                                    <span className="text-gray-400">Storage container</span>
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                {child.id}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    )}
 
                 {locationDetails?.items && locationDetails.items.length > 0 && (
                     <div className="w-full rounded-xl border mb-8 mt-4 overflow-hidden">
