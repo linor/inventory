@@ -41,6 +41,29 @@ export default function TablePaging({ table }: { table: Table<any> }) {
             liveRegionRef.current.textContent = `Page ${pageIndex + 1} of ${pageCount}`;
         }
     }, [pageIndex, pageCount]);
+    
+    React.useEffect(() => {
+        const handleLeftRight = (e: KeyboardEvent) => {
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || (e.target as HTMLElement).isContentEditable) {
+                return; 
+            }
+
+            if (e.key === 'ArrowLeft') {
+                if (table.getCanPreviousPage()) {
+                    table.previousPage();
+                }
+            } else if (e.key === 'ArrowRight') {
+                if (table.getCanNextPage()) {
+                    table.nextPage();
+                }
+            }
+        }
+
+        window.addEventListener('keydown', handleLeftRight);
+        return () => {
+            window.removeEventListener('keydown', handleLeftRight);
+        }
+    }, []);
 
     return (
         <div className="flex flex-col items-end space-y-2 py-4">
