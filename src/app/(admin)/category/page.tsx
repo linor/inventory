@@ -11,6 +11,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { FlashMessageProvider } from "@thewebartisan7/next-flash-message/components";
 
 
 export default async function Page() {
@@ -49,6 +50,7 @@ export default async function Page() {
 
                 <Link href="/category/new" className="mt-4"><Button>Add New Category</Button></Link>
             </main>
+            <FlashMessageProvider />
         </>
     );
 }

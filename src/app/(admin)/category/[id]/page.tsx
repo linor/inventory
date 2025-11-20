@@ -14,6 +14,18 @@ import {
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+    DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu"
+import {
+    MoreHorizontalIcon,
+} from "lucide-react"
+import DeleteCategory from "./DeleteCategory";
 
 export default async function LocationPage({
     params,
@@ -48,7 +60,7 @@ export default async function LocationPage({
         <>
             <PageHeader breadcrumbs={breadcrumbs} />
             <main className="shrink-0 items-center gap-2 px-4">
-                                <div className="w-full rounded-xl border mb-8 mt-4 p-4 overflow-hidden flex items-start justify-between">
+                <div className="w-full rounded-xl border mb-8 mt-4 p-4 overflow-hidden flex items-start justify-between">
                     <div>
                         <span className="text-3xl font-bold">
                             {categoryDetails?.name}
@@ -74,6 +86,18 @@ export default async function LocationPage({
                                     <FontAwesomeIcon icon={faPenToSquare} /> edit
                                 </Link>
                             </Button>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" size="icon">
+                                        <MoreHorizontalIcon />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-52">
+                                    <DropdownMenuGroup>
+                                        <DeleteCategory category={categoryDetails} />
+                                    </DropdownMenuGroup>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </ButtonGroup>
                     </div>
                 </div>
