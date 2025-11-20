@@ -32,12 +32,15 @@ import {
     MoreHorizontalIcon,
 } from "lucide-react"
 import DeleteLocation from "./DeleteLocation";
+import { isAdminUser } from "@/auth";
 
 export default async function LocationPage({
     params,
 }: {
     params: Promise<{ id: string }>;
 }) {
+    const isAdmin = await isAdminUser();
+
     const { id } = await params;
     const locationDetails = await prisma.storageLocation.findUnique({
         where: { id },
@@ -71,12 +74,6 @@ export default async function LocationPage({
         href: "",
     });
 
-    function handlePrintLabel() {
-        "use client";
-
-        printLabelForLocation(locationDetails!);
-    }
-
     return (
         <>
             <PageHeader breadcrumbs={breadcrumbs} />
@@ -96,33 +93,35 @@ export default async function LocationPage({
                             </p>
                         )}
                     </div>
-                    <div className="flex gap-2">
-                        <ButtonGroup>
-                            <Button
-                                variant="outline"
-                                asChild
-                            >
-                                <Link href={`/location/${id}/edit`}>
-                                    <FontAwesomeIcon icon={faPenToSquare} /> edit
-                                </Link>
-                            </Button>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" size="icon">
-                                        <MoreHorizontalIcon />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-52">
-                                    <DropdownMenuGroup>
-                                        <DeleteLocation location={locationDetails!} />
-                                    </DropdownMenuGroup>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </ButtonGroup>
-                        <ButtonGroup>
-                            <PrintButton location={locationDetails!} />
-                        </ButtonGroup>
-                    </div>
+                    {isAdmin && (
+                        <div className="flex gap-2">
+                            <ButtonGroup>
+                                <Button
+                                    variant="outline"
+                                    asChild
+                                >
+                                    <Link href={`/location/${id}/edit`}>
+                                        <FontAwesomeIcon icon={faPenToSquare} /> edit
+                                    </Link>
+                                </Button>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="outline" size="icon">
+                                            <MoreHorizontalIcon />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-52">
+                                        <DropdownMenuGroup>
+                                            <DeleteLocation location={locationDetails!} />
+                                        </DropdownMenuGroup>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </ButtonGroup>
+                            <ButtonGroup>
+                                <PrintButton location={locationDetails!} />
+                            </ButtonGroup>
+                        </div>
+                    )}
                 </div>
 
                 {locationDetails?.children &&

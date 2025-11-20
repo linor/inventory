@@ -12,9 +12,11 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { FlashMessageProvider } from "@thewebartisan7/next-flash-message/components";
+import { isAdminUser } from "@/auth";
 
 
 export default async function Page() {
+    const isAdmin = await isAdminUser();
     const categories = await prisma.category.findMany({ orderBy: { name: 'asc' } });
 
     return (
@@ -48,7 +50,11 @@ export default async function Page() {
                     </Table>
                 </div>
 
-                <Link href="/category/new" className="mt-4"><Button>Add New Category</Button></Link>
+                {isAdmin && (
+                    <Link href="/category/new" className="mt-4">
+                        <Button>Add New Category</Button>
+                    </Link>
+                )}
             </main>
             <FlashMessageProvider />
         </>

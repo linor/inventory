@@ -1,7 +1,10 @@
+import { requireAdminRole } from "@/auth";
 import PageHeader from "../../PageHeader";
 import NewCategoryForm from "./form";
 
-export default function NewCategoryPage() {
+export default async function NewCategoryPage() {
+    await requireAdminRole();
+    
     return (
         <>
             <PageHeader breadcrumbs={[{ name: "Categories", href: "/category" }, { name: "New" }]} /> 

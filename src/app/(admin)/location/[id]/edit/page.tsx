@@ -2,12 +2,15 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import LocationEditForm from "./form";
 import PageHeader from "@/app/(admin)/PageHeader";
+import { requireAdminRole } from "@/auth";
 
 export default async function EditLocationPage({
     params,
 }: {
     params: Promise<{ id: string }>;
 }) {
+    await requireAdminRole();
+    
     const { id } = await params;
     const locationDetails = await prisma.storageLocation.findUnique({
         where: { id },

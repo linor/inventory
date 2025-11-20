@@ -9,8 +9,10 @@ import { groupByParent, GroupedStorageLocation } from "./util";
 
 export default function LocationList({
     location: locations,
+    showNewButton,
 }: {
     location: StorageLocation[];
+    showNewButton: boolean;
 }) {
     const groupedLocations = groupByParent(locations);
 
@@ -65,9 +67,11 @@ export default function LocationList({
                 pageSize={15}
                 searchPlaceholder="Search Locations..."
             >
-                <Link href="/location/new" className="ml-2">
-                    <Button>Add New Location</Button>
-                </Link>
+                {showNewButton && (
+                    <Link href="/location/new" className="ml-2">
+                        <Button>Add New Location</Button>
+                    </Link>
+                )}
             </SortedFilteredList>
         </>
     );

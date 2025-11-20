@@ -20,6 +20,7 @@ type ItemWithCategoryAndLocation = Item & {
 
 type ItemListProps = {
     items: ItemWithCategoryAndLocation[];
+    showNewButton?: boolean;
 };
 
 const columns: ColumnDef<ItemWithCategoryAndLocation>[] = [
@@ -73,7 +74,7 @@ const columns: ColumnDef<ItemWithCategoryAndLocation>[] = [
     },
 ];
 
-export default function ItemList({ items }: ItemListProps) {
+export default function ItemList({ items, showNewButton }: ItemListProps) {
     return (
         <SortedFilteredList
             data={items}
@@ -82,9 +83,11 @@ export default function ItemList({ items }: ItemListProps) {
             searchPlaceholder="Search Items..."
             filterFn={fuzzyFilter}
         >
-            <Link href="/item/new" className="ml-2">
-                <Button>Add New Item</Button>
-            </Link>
+            {showNewButton && (
+                <Link href="/item/new" className="ml-2">
+                    <Button>Add New Item</Button>
+                </Link>
+            )}
         </SortedFilteredList>
     );
 }

@@ -22,7 +22,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import SignOutButton from "@/components/sign-out-button";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/auth";
+import { authOptions, requireAdminRole } from "@/auth";
 import UserFooter from "./UserFooter";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -32,6 +32,7 @@ type NavItem = {
     icon: IconDefinition;
     path?: string;
     add?: string;
+    requireAdminRole: boolean;
 };
 
 const navItems: NavItem[] = [
@@ -40,28 +41,34 @@ const navItems: NavItem[] = [
         name: "Items",
         path: '/item',
         add: '/item/new',
+        requireAdminRole: false,
     },
     {
         icon: faBoxArchive,
         name: "Locations",
         path: "/location",
         add: "/location/new",
+        requireAdminRole: false,
     },
     {
         icon: faFolder,
         name: "Categories",
         path: "/category",
         add: "/category/new",
+        requireAdminRole: false,
     },
     {
         name: "Scanner",
         icon: faBarcode,
         path: "/scanner",
+        requireAdminRole: true,
     }
 ];
 
 export async function AppSidebar() {
     const session = await getServerSession(authOptions);
+    // @ts-ignore
+    const hasAdminRole = session?.user?.role === 'ADMIN';
 
     return (
         <Sidebar>
@@ -86,21 +93,23 @@ export async function AppSidebar() {
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {navItems.map((item) => (
-                                <SidebarMenuItem key={item.name} className="flex items-center gap-2">
-                                    <SidebarMenuButton asChild>
-                                        <a href={item.path}>
-                                            <FontAwesomeIcon icon={item.icon} />
-                                            <span>{item.name}</span>
-                                        </a>
-                                    </SidebarMenuButton>
-                                    {item.add && (
-                                        <SidebarMenuAction showOnHover={true} asChild>
-                                            <Link href={item.add} >
-                                                <FontAwesomeIcon icon={faPlusCircle} />
-                                            </Link>
-                                        </SidebarMenuAction>
-                                    )}
-                                </SidebarMenuItem>
+                                (!item.requireAdminRole || hasAdminRole) && (
+                                    <SidebarMenuItem key={item.name} className="flex items-center gap-2">
+                                        <SidebarMenuButton asChild>
+                                            <a href={item.path}>
+                                                <FontAwesomeIcon icon={item.icon} />
+                                                <span>{item.name}</span>
+                                            </a>
+                                        </SidebarMenuButton>
+                                        {hasAdminRole && item.add && (
+                                            <SidebarMenuAction showOnHover={true} asChild>
+                                                <Link href={item.add} >
+                                                    <FontAwesomeIcon icon={faPlusCircle} />
+                                                </Link>
+                                            </SidebarMenuAction>
+                                        )}
+                                    </SidebarMenuItem>
+                                )
                             ))}
                         </SidebarMenu>
                     </SidebarGroupContent>

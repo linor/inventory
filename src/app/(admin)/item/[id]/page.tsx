@@ -32,6 +32,7 @@ import {
     MoreHorizontalIcon,
 } from "lucide-react"
 import DeleteItem from "./DeleteItem";
+import { isAdminUser } from "@/auth";
 
 type DisplayAttribute = {
     key: string;
@@ -45,6 +46,7 @@ export default async function ViewItemPage({
 }: {
     params: Promise<{ id: string }>;
 }) {
+    const isAdmin = await isAdminUser();
     const { id } = await params;
 
     const item = await prisma.item.findUnique({
@@ -74,7 +76,7 @@ export default async function ViewItemPage({
     }) : undefined;
 
     const attributesToDisplay: DisplayAttribute[] = (item.attributes || []).map(attr => ({ key: attr.key, name: attr.key, value: attr.value }));
-    for(const categoryKey of category?.keys || []) {
+    for (const categoryKey of category?.keys || []) {
         const attribute = attributesToDisplay.find(attr => attr.key === categoryKey.key);
         if (attribute) {
             attribute.name = categoryKey.name || categoryKey.key;
@@ -102,41 +104,43 @@ export default async function ViewItemPage({
                             </p>
                         )}
                     </div>
-                    <div className="flex gap-2">
-                        <ButtonGroup>
-                            <Button
-                                variant="outline"
-                                asChild
-                            >
-                                <Link href={`/item/${item.id}/edit`}>
-                                    <FontAwesomeIcon icon={faPenToSquare} /> edit
-                                </Link>
-                            </Button>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" size="icon">
-                                        <MoreHorizontalIcon />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-52">
-                                    <DropdownMenuGroup>
-                                        <DropdownMenuItem >
-                                            <Link href={`/item/new?copy=${encodeURIComponent(item.id)}`}>
-                                                <FontAwesomeIcon icon={faCopy} /> Duplicate item
-                                            </Link>
-                                        </DropdownMenuItem>
-                                    </DropdownMenuGroup>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuGroup>
-                                        <DeleteItem item={item} />
-                                    </DropdownMenuGroup>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </ButtonGroup>
-                        <ButtonGroup>
-                            <PrintButton item={item} category={category} location={location} />
-                        </ButtonGroup>
-                    </div>
+                    {isAdmin && (
+                        <div className="flex gap-2">
+                            <ButtonGroup>
+                                <Button
+                                    variant="outline"
+                                    asChild
+                                >
+                                    <Link href={`/item/${item.id}/edit`}>
+                                        <FontAwesomeIcon icon={faPenToSquare} /> edit
+                                    </Link>
+                                </Button>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="outline" size="icon">
+                                            <MoreHorizontalIcon />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-52">
+                                        <DropdownMenuGroup>
+                                            <DropdownMenuItem >
+                                                <Link href={`/item/new?copy=${encodeURIComponent(item.id)}`}>
+                                                    <FontAwesomeIcon icon={faCopy} /> Duplicate item
+                                                </Link>
+                                            </DropdownMenuItem>
+                                        </DropdownMenuGroup>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuGroup>
+                                            <DeleteItem item={item} />
+                                        </DropdownMenuGroup>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </ButtonGroup>
+                            <ButtonGroup>
+                                <PrintButton item={item} category={category} location={location} />
+                            </ButtonGroup>
+                        </div>
+                    )}
                 </div>
 
                 {location && (

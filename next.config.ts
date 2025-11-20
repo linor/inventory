@@ -4,6 +4,9 @@ import pack from './package.json' assert { type: "json" };
 const version = (pack as { version: string }).version;
 
 const nextConfig: NextConfig = {
+    experimental: {
+        authInterrupts: true,
+    },
     turbopack: {
         rules: {
             '*.svg': {

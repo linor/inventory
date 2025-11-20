@@ -1,6 +1,7 @@
-import NextAuth, { NextAuthOptions } from "next-auth"
+import NextAuth, { getServerSession, NextAuthOptions } from "next-auth"
 import GithubProvider from "next-auth/providers/github";
 import { PrismaClient } from "./generated/prisma";
+import { forbidden, notFound } from "next/navigation";
 
 const prisma = new PrismaClient();
 
@@ -75,3 +76,17 @@ export const authOptions: NextAuthOptions = {
 }
 
 export const nextauth = NextAuth(authOptions);
+
+export async function requireAdminRole() {
+  const session = await getServerSession(authOptions);
+  // @ts-ignore
+  if (session?.user?.role !== "ADMIN") {
+    forbidden();
+  }
+}
+
+export async function isAdminUser() {
+  const session = await getServerSession(authOptions);
+  // @ts-ignore
+  return session?.user?.role === "ADMIN";
+}

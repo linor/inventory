@@ -2,12 +2,15 @@ import prisma from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import EditCategoryForm from "./form";
 import PageHeader from "@/app/(admin)/PageHeader";
+import { requireAdminRole } from "@/auth";
 
 export default async function EditCategoryPage({
     params,
 }: {
     params: Promise<{ id: string }>;
 }) {
+    await requireAdminRole();
+    
     const { id } = await params;
     if (isNaN(Number(id))) {
         notFound();

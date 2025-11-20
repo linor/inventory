@@ -1,8 +1,11 @@
 import prisma from "@/lib/prisma";
 import PageHeader from "../../PageHeader";
 import NewLocationForm from "./form";
+import { requireAdminRole } from "@/auth";
 
 export default async function NewLocation({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+    await requireAdminRole();
+    
     let prefill = (await searchParams).prefill;
 
     const id = typeof prefill === "string" ? prefill : undefined;

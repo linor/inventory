@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button";
 import * as React from "react";
 import LocationList from "./List";
 import { FlashMessageProvider } from "@thewebartisan7/next-flash-message/components";
+import { isAdminUser } from "@/auth";
 
 export default async function Page() {
+  const isAdmin = await isAdminUser();
   const locations = await prisma.storageLocation.findMany({
     orderBy: { name: "asc" },
   });
@@ -22,7 +24,7 @@ export default async function Page() {
     <>
       <PageHeader breadcrumbs={[{ name: "All Locations" }]} />
       <main className="shrink-0 items-center gap-2 px-4">
-        <LocationList location={locations}/>
+        <LocationList location={locations} showNewButton={isAdmin} />
       </main>
       <FlashMessageProvider />
     </>

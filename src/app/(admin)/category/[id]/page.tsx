@@ -26,12 +26,14 @@ import {
     MoreHorizontalIcon,
 } from "lucide-react"
 import DeleteCategory from "./DeleteCategory";
+import { isAdminUser } from "@/auth";
 
 export default async function LocationPage({
     params,
 }: {
     params: Promise<{ id: string }>;
 }) {
+    const isAdmin = await isAdminUser();
     const { id } = await params;
     if (isNaN(Number(id))) {
         notFound();
@@ -76,30 +78,32 @@ export default async function LocationPage({
                             </p>
                         )}
                     </div>
-                    <div className="flex gap-2">
-                        <ButtonGroup>
-                            <Button
-                                variant="outline"
-                                asChild
-                            >
-                                <Link href={`/category/${id}/edit`}>
-                                    <FontAwesomeIcon icon={faPenToSquare} /> edit
-                                </Link>
-                            </Button>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" size="icon">
-                                        <MoreHorizontalIcon />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-52">
-                                    <DropdownMenuGroup>
-                                        <DeleteCategory category={categoryDetails} />
-                                    </DropdownMenuGroup>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </ButtonGroup>
-                    </div>
+                    {isAdmin && (
+                        <div className="flex gap-2">
+                            <ButtonGroup>
+                                <Button
+                                    variant="outline"
+                                    asChild
+                                >
+                                    <Link href={`/category/${id}/edit`}>
+                                        <FontAwesomeIcon icon={faPenToSquare} /> edit
+                                    </Link>
+                                </Button>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="outline" size="icon">
+                                            <MoreHorizontalIcon />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-52">
+                                        <DropdownMenuGroup>
+                                            <DeleteCategory category={categoryDetails} />
+                                        </DropdownMenuGroup>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </ButtonGroup>
+                        </div>
+                    )}
                 </div>
 
                 {categoryDetails?.keys && categoryDetails.keys.length > 0 && (

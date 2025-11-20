@@ -5,12 +5,15 @@ import EditItemForm from "./form";
 import { mergeKeyValuePairsForCategory } from "../../CategoryKeyValueActions";
 import { ItemFormStartValue } from "../../SharedFormSchema";
 import { start } from "repl";
+import { requireAdminRole } from "@/auth";
 
 export default async function EditItemPage({
     params,
 }: {
     params: Promise<{ id: string }>;
 }) {
+    await requireAdminRole();
+    
     const { id } = await params;
     const itemDetails = await prisma.item.findUnique({
         where: { id },

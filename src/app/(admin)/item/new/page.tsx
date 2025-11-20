@@ -5,8 +5,11 @@ import { mergeKeyValuePairsForCategory } from "../CategoryKeyValueActions";
 import { FlashMessageProvider } from "@thewebartisan7/next-flash-message/components";
 import { convertItemAttributesToKeyValuePairs } from "../utils";
 import { ItemFormStartValue } from "../SharedFormSchema";
+import { requireAdminRole } from "@/auth";
 
 export default async function NewItemPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+    await requireAdminRole();
+    
     const categories = await prisma.category.findMany({ include: { keys: true } }) || [];
     const allLocations = await prisma.storageLocation.findMany({ orderBy: { name: 'asc' } });
 

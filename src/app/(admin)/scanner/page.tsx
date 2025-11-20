@@ -1,8 +1,11 @@
+import { requireAdminRole } from "@/auth";
 import PageHeader from "../PageHeader";
 import BarcodeInput from "./BarcodeInput";
 
 
-export default function ScannerPage() {
+export default async function ScannerPage() {
+    await requireAdminRole();
+
     return (
         <>
             <PageHeader breadcrumbs={[{ name: "Scanner" }]} />
