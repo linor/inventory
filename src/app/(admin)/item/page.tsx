@@ -9,6 +9,13 @@ export default async function Page() {
         include: { category: true, location: true },
     });
 
+    items.sort((a, b) =>
+        (a.name ?? "").localeCompare(b.name ?? "", undefined, {
+            numeric: true,
+            sensitivity: "base",
+        })
+    );
+
     return (
         <>
             <PageHeader breadcrumbs={[{ name: "All Items" }]} />
