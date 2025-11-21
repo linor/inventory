@@ -13,9 +13,11 @@ import { ignoreEnterKey } from "@/lib/noenter";
 export default function NewLocationForm({
   allLocations,
   id,
+  highestNumber,
 }: {
   allLocations: StorageLocation[];
   id?: string;
+  highestNumber: number;
 }) {
   const [isGeneratingId, setIsGeneratingId] = useState(false);
   const [state, action, isPending] = useActionState(newLocationAction, {
@@ -73,6 +75,7 @@ export default function NewLocationForm({
         type="text"
         defaultValue={state?.form?.name}
         onKeyDown={ignoreEnterKey}
+        description={highestNumber ? `Next numeric ID would be ${highestNumber + 1}` : undefined}
       />
       <Input
         label="Contents"
