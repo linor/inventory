@@ -57,7 +57,10 @@ export default function PrintButton({
                             QR Only (25x25)
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => printLabel(location, "portrait")}>
-                            Portrait (54x101)
+                            Portrait (41x89)
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => printLabel(location, "landscape")}>
+                            Landscape (41x89)
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => printLabel(location, "narrowlandscape")}>
                             Narrow landscape (28x89)
