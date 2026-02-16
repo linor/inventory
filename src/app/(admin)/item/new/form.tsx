@@ -76,7 +76,7 @@ export default function NewItemForm({ categories, locations, id, source, options
                 label="ID"
                 labelPlacement="inside"
                 name="id"
-                placeholder="Enter a unique ID for this location"
+                placeholder="Enter a unique ID for this item"
                 type="text"
                 defaultValue={state?.form?.id}
                 value={generatedId}
