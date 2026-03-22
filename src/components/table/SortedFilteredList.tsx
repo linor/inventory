@@ -39,7 +39,6 @@ export default function SortedFilteredList<E>({
     searchPlaceholder = "Search...",
     filterFn,
 }: SortedFilteredListProps<E>) {
-    const [contents, setContents] = useState(data);
     const [globalFilter, setGlobalFilter] = useState<any>([]);
     const [pagination, setPagination] = useState({
         pageIndex: 0,
@@ -47,7 +46,7 @@ export default function SortedFilteredList<E>({
     });
 
     const table = useReactTable({
-        data: contents,
+        data,
         columns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),

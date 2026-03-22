@@ -6,6 +6,7 @@ import { Button, Link } from "@heroui/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { rankItem } from "@tanstack/match-sorter-utils";
 import { FilterFn } from "@tanstack/react-table";
+import { useMemo, useState } from "react";
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
     const itemRank = rankItem(row.getValue(columnId), value);
@@ -75,14 +76,37 @@ const columns: ColumnDef<ItemWithCategoryAndLocation>[] = [
 ];
 
 export default function ItemList({ items, showNewButton }: ItemListProps) {
+    const [exactSearch, setExactSearch] = useState(false);
+    const fuzzyOrNormal: FilterFn<any> = (row, columnId, value, addMeta) => {
+        if (exactSearch) {
+            const rowValue = row.getValue(columnId);
+            return String(rowValue ?? "")
+                .toLowerCase()
+                .includes(String(value ?? "").toLowerCase());
+        } else {
+            return fuzzyFilter(row, columnId, value, addMeta);
+        }
+    }
+    const testData = useMemo(() => {
+        return [...items]
+    }, [exactSearch]);
+
     return (
         <SortedFilteredList
-            data={items}
+            data={testData}
             columns={columns}
             pageSize={15}
             searchPlaceholder="Search Items..."
-            filterFn={fuzzyFilter}
+            filterFn={fuzzyOrNormal}
         >
+            <input
+                        id="exactsearch"
+                        type="checkbox"
+                        checked={exactSearch}
+                        onChange={(e) => setExactSearch(e.target.checked)}
+                    />
+            <label htmlFor="exactsearch">Exact match</label>
+
             {showNewButton && (
                 <Link href="/item/new" className="ml-2">
                     <Button>Add New Item</Button>
