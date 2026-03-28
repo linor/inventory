@@ -99,7 +99,7 @@ export default async function ViewItemPage({
                             {item?.id}
                         </div>
                         {item?.description && (
-                            <p className="text-gray-600 mt-5">
+                            <p className="text-gray-600 mt-5" style={{ whiteSpace: 'pre-wrap' }}>
                                 {item?.description}
                             </p>
                         )}
